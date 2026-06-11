@@ -1,0 +1,426 @@
+.manage-exams {
+  animation: fadeIn 0.3s ease;
+}
+
+.exams-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.exam-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border-left: 4px solid;
+}
+
+.exam-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.exam-card.status-active {
+  border-left-color: #4caf50;
+}
+
+.exam-card.status-draft {
+  border-left-color: #ff9800;
+}
+
+.exam-card.status-archived {
+  border-left-color: #999;
+}
+
+.exam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.exam-header h3 {
+  margin: 0;
+  color: #333;
+  flex: 1;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-badge.active {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.draft {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-badge.archived {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.description {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.75rem 0;
+  line-height: 1.4;
+}
+
+.exam-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 1rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.detail-item .label {
+  color: #999;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.detail-item .value {
+  color: #333;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.exam-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.stat {
+  background-color: #f5f5f5;
+  padding: 0.75rem;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.stat .label {
+  display: block;
+  color: #999;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.stat .value {
+  display: block;
+  color: #333;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.created-info {
+  color: #999;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-small {
+  flex: 1;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  background-color: rgb(52, 51, 51);
+  color: white;
+}
+
+.btn-small:hover {
+  background-color: rgb(32, 31, 31);
+}
+
+.btn-edit {
+  background-color: rgb(52, 51, 51);
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: rgb(32, 31, 31);
+}
+
+.btn-view {
+  background-color: rgb(52, 51, 51);
+  color: white;
+}
+
+.btn-view:hover {
+  background-color: rgb(32, 31, 31);
+}
+
+.btn-delete {
+  background-color: rgb(52, 51, 51);
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: rgb(32, 31, 31);
+}
+
+.btn-questions {
+  background-color: rgb(52, 51, 51);
+  color: white;
+}
+
+.btn-questions:hover {
+  background-color: rgb(47, 14, 32);
+}
+
+.btn-add {
+  background-color: rgb(52, 51, 51);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.btn-add:hover {
+  background-color: rgb(47, 14, 32);
+}
+
+.btn-remove {
+  background-color: rgb(52, 51, 51);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.btn-remove:hover {
+  background-color: rgb(47, 14, 32);
+}
+
+/* Primary button (Create New Exam) */
+.btn-primary {
+  background-color: rgb(52, 51, 51);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: rgb(47, 14, 32);
+}
+
+/* Secondary button (Cancel/Close) */
+.btn-secondary {
+  background-color: rgb(52, 51, 51);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: rgb(32, 31, 31);
+}
+
+@media (max-width: 768px) {
+  .exams-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .exam-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+.questions-layout {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.available-questions {
+  flex: 1;
+}
+
+.available-questions h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.questions-list {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 1rem;
+}
+
+.question-item {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.question-text {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.question-meta {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.question-meta .badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+.question-meta .badge.type {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.question-meta .badge.difficulty {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.question-meta .badge.topic {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.modal-large {
+  max-width: 700px;
+  width: 90%;
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: #9ca3af;
+}
+
+/* Topic Filter Section */
+.filter-section {
+  margin-bottom: 1rem;
+}
+
+.filter-section .filter-select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: white;
+}
+
+.filter-section .filter-select:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.filter-select {
+  min-width: 150px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+}
+
+.no-exams {
+  text-align: center;
+  padding: 2rem;
+  color: #999;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,112 @@
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: white;
+  }
+  
+  .login-card {
+    background: rgb(52, 51, 51);
+    padding: 3rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .login-card h1 {
+    text-align: center;
+    color: wheat;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+  }
+  
+  .login-card h2 {
+    text-align: center;
+    color: wheat;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label a{
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: wheat;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+  
+  .login-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: rgb(246, 48, 48);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .login-button:hover {
+    background-color: burlywood;
+  }
+  
+  .login-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .signup-link {
+    text-align: center;
+    margin-top: 1rem;
+    color: #666;
+  }
+  
+  .signup-link a {
+    color: blue;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .signup-link a:hover {
+    text-decoration: underline;
+  }
+  .forgot-password-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+  
+  .forgot-password-btn {
+    background: none;
+    border: none;
+    color: #6366f1;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .forgot-password-btn:hover {
+    text-decoration: underline;
+  }
