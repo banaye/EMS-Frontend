@@ -37,6 +37,8 @@ interface ExamSummary {
 
 const ExamResults: React.FC = () => {
   const { user } = useAuth();
+  const isStaff = user?.role === 'admin' || user?.role === 'instructor';
+  
   const [exams, setExams] = useState<Exam[]>([]);
   const [selectedExam, setSelectedExam] = useState<number | null>(null);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
@@ -47,6 +49,7 @@ const ExamResults: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedAttempt, setSelectedAttempt] = useState<Attempt | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -121,6 +124,33 @@ const ExamResults: React.FC = () => {
     } catch (err) {
       setSelectedAttempt(attempt);
       setShowDetailModal(true);
+    }
+  };
+
+  const handleDeleteAttempt = async (attemptId: number, studentName: string) => {
+    if (!window.confirm(`Are you sure you want to delete ${studentName}'s attempt? This action cannot be undone.`)) {
+      return;
+    }
+    
+    setDeletingId(attemptId);
+    try {
+      const response = await fetch(`http://localhost:5000/api/exams/${selectedExam}/attempts/${attemptId}/delete`, {
+        method: 'DELETE',
+        headers,
+      });
+      
+      if (response.ok) {
+        alert('Attempt deleted successfully!');
+        fetchAttempts(selectedExam!);
+        fetchSummary(selectedExam!);
+      } else {
+        const json = await response.json();
+        alert(json.message || 'Failed to delete attempt');
+      }
+    } catch (err) {
+      alert('Failed to delete attempt');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -329,13 +359,22 @@ const ExamResults: React.FC = () => {
                           ? new Date(attempt.submitted_at).toLocaleDateString()
                           : '—'}
                       </td>
-                      <td>
+                      <td className="actions">
                         <button
                           onClick={() => fetchAttemptDetail(attempt)}
                           className="btn-small btn-view"
                         >
                           View Detail
                         </button>
+                        {isStaff && (
+                          <button
+                            onClick={() => handleDeleteAttempt(attempt.id, attempt.student_name)}
+                            disabled={deletingId === attempt.id}
+                            className="btn-small btn-delete"
+                          >
+                            {deletingId === attempt.id ? 'Deleting...' : 'Delete'}
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}

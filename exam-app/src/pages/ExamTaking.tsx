@@ -129,8 +129,42 @@ const ExamTaking: React.FC = () => {
     setTimeout(() => setWarning(''), 2000);
   };
 
+  // Check if student has already completed this exam
+  const checkIfExamAlreadyTaken = async () => {
+    try {
+      // Check for existing completed attempt via API
+      const checkRes = await fetch(`http://localhost:5000/api/exams/${examId}/attempts`, { headers });
+      if (checkRes.ok) {
+        const json = await checkRes.json();
+        const attemptsData = json.data || json;
+        const completedAttempt = Array.isArray(attemptsData) && attemptsData.find(
+          (a: any) => a.status === 'graded' || a.status === 'submitted'
+        );
+        
+        if (completedAttempt) {
+          alert('You have already taken this exam. You cannot take it again.');
+          navigate('/dashboard', { replace: true });
+          return true;
+        }
+      }
+      return false;
+    } catch (err) {
+      console.error('Error checking exam status:', err);
+      return false;
+    }
+  };
+
   useEffect(() => {
-    initExam();
+    const init = async () => {
+      // First check if exam was already taken
+      const alreadyTaken = await checkIfExamAlreadyTaken();
+      if (alreadyTaken) return;
+      
+      // If not taken, proceed with exam initialization
+      initExam();
+    };
+    
+    init();
   }, [examId]);
 
   // Timer with auto-submit on time elapsed
@@ -217,6 +251,7 @@ const ExamTaking: React.FC = () => {
         { method: 'POST', headers }
       );
       if (!res.ok) throw new Error('Failed to submit exam');
+      alert('Exam submitted successfully!');
       navigate(`/results/${examId}`);
     } catch (err) {
       setError('Failed to submit exam. Please try again.');
