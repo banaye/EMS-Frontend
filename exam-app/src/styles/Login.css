@@ -7,7 +7,7 @@
   }
   
   .login-card {
-    background: rgb(52, 51, 51);
+    background: var(--primary-color);
     padding: 3rem;
     border-radius: 8px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
@@ -17,14 +17,14 @@
   
   .login-card h1 {
     text-align: center;
-    color: wheat;
+    color: var(--secondary-color);
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
   }
   
   .login-card h2 {
     text-align: center;
-    color: wheat;
+    color: var(--secondary-color);
     margin-bottom: 2rem;
     font-size: 1.2rem;
   }
