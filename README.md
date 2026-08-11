@@ -1,5 +1,5 @@
 -A modern examination system with e-learning platform built using React, TypeScript and Vite
--It's a role-based system for students, Instructors, and Administrators
+-It's a role-based system for Students, Instructors, and HODs (Heads of Department)
 
 ## Overview
 ## Features
@@ -20,8 +20,9 @@
 -  Access course analytics and reports
 -  Upload course materials
 
-### For Administrators
--  Full user management (students, instructors, admins)
+### For HODs
+-  Full user management (students, instructors, HODs)
+-  Add, edit, delete, and suspend students or instructors from their privileges
 -  Oversee all courses and exams
 -  Platform-wide analytics dashboard
 -  Generate comprehensive reports

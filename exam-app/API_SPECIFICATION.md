@@ -127,16 +127,16 @@ Authorization: Bearer <token>
 ## User Management Endpoints
 
 ### GET /api/users
-**Description**: List all users (Admin only)
+**Description**: List all users (HOD only)
 
 **Headers**
 ```
-Authorization: Bearer <admin_token>
+Authorization: Bearer <hod_token>
 ```
 
 **Query Parameters**
 ```
-?role=student        # Filter by role (admin/student)
+?role=student        # Filter by role (hod/student)
 ?search=john         # Search by name or email
 ?page=1              # Pagination
 &limit=20            # Items per page
@@ -167,11 +167,11 @@ Authorization: Bearer <admin_token>
 ---
 
 ### POST /api/users
-**Description**: Create new user (Admin only)
+**Description**: Create new user (HOD only)
 
 **Headers**
 ```
-Authorization: Bearer <admin_token>
+Authorization: Bearer <hod_token>
 ```
 
 **Request**
@@ -263,11 +263,11 @@ Authorization: Bearer <token>
 ---
 
 ### DELETE /api/users/:userId
-**Description**: Delete user account (Admin only)
+**Description**: Delete user account (HOD only)
 
 **Headers**
 ```
-Authorization: Bearer <admin_token>
+Authorization: Bearer <hod_token>
 ```
 
 **Response (204)**
@@ -314,11 +314,11 @@ No content
 ---
 
 ### POST /api/courses
-**Description**: Create new course (Admin only)
+**Description**: Create new course (HOD only)
 
 **Headers**
 ```
-Authorization: Bearer <admin_token>
+Authorization: Bearer <hod_token>
 ```
 
 **Request**
@@ -381,7 +381,7 @@ Authorization: Bearer <admin_token>
 ---
 
 ### PUT /api/courses/:courseId
-**Description**: Update course information (Admin only)
+**Description**: Update course information (HOD only)
 
 **Request**
 ```json
@@ -407,7 +407,7 @@ Authorization: Bearer <admin_token>
 ---
 
 ### DELETE /api/courses/:courseId
-**Description**: Delete course (Admin only)
+**Description**: Delete course (HOD only)
 
 **Response (204)**
 No content
@@ -440,7 +440,7 @@ Authorization: Bearer <token>
 ---
 
 ### POST /api/courses/:courseId/unenroll
-**Description**: Remove student from course (Admin only)
+**Description**: Remove student from course (HOD only)
 
 **Request**
 ```json
@@ -498,7 +498,7 @@ Authorization: Bearer <token>
 ---
 
 ### POST /api/exams
-**Description**: Create new exam (Admin only)
+**Description**: Create new exam (HOD only)
 
 **Request**
 ```json
@@ -563,7 +563,7 @@ Authorization: Bearer <token>
 ---
 
 ### PUT /api/exams/:examId
-**Description**: Update exam details (Admin only)
+**Description**: Update exam details (HOD only)
 
 **Request**
 ```json
@@ -591,7 +591,7 @@ Authorization: Bearer <token>
 ---
 
 ### DELETE /api/exams/:examId
-**Description**: Delete exam (Admin only)
+**Description**: Delete exam (HOD only)
 
 **Response (204)**
 No content
@@ -645,7 +645,7 @@ Authorization: Bearer <student_token>
 ## Question Management Endpoints
 
 ### GET /api/questions
-**Description**: List all questions (Admin)
+**Description**: List all questions (HOD)
 
 **Query Parameters**
 ```
@@ -681,7 +681,7 @@ Authorization: Bearer <student_token>
 ---
 
 ### POST /api/questions
-**Description**: Create new question (Admin)
+**Description**: Create new question (HOD)
 
 **Request**
 ```json
@@ -715,7 +715,7 @@ Authorization: Bearer <student_token>
 ---
 
 ### PUT /api/questions/:questionId
-**Description**: Update question (Admin)
+**Description**: Update question (HOD)
 
 **Request**
 ```json
@@ -741,7 +741,7 @@ Authorization: Bearer <student_token>
 ---
 
 ### DELETE /api/questions/:questionId
-**Description**: Delete question (Admin)
+**Description**: Delete question (HOD)
 
 **Response (204)**
 No content
@@ -755,7 +755,7 @@ No content
 
 **Headers**
 ```
-Authorization: Bearer <admin_token>
+Authorization: Bearer <hod_token>
 ```
 
 **Query Parameters**
@@ -866,11 +866,11 @@ Authorization: Bearer <token>
 ---
 
 ### GET /api/reports/analytics
-**Description**: Get overall analytics (Admin)
+**Description**: Get overall analytics (HOD)
 
 **Headers**
 ```
-Authorization: Bearer <admin_token>
+Authorization: Bearer <hod_token>
 ```
 
 **Response (200)**
@@ -914,7 +914,7 @@ Authorization: Bearer <admin_token>
 
 ### Authorization Errors
 - `AUTH_INSUFFICIENT_PERMISSION` - User lacks required role/permission
-- `AUTH_ADMIN_ONLY` - This action is only available to administrators
+- `AUTH_HOD_ONLY` - This action is only available to HODs
 
 ### Validation Errors
 - `VALIDATION_REQUIRED_FIELD` - Required field is missing

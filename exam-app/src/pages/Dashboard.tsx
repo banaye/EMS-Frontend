@@ -22,7 +22,7 @@ interface User {
   email: string;
   first_name: string;
   last_name: string;
-  role: 'student' | 'instructor' | 'admin';
+  role: 'student' | 'instructor' | 'hod';
 }
 
 const Dashboard: React.FC = () => {

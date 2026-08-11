@@ -33,6 +33,10 @@ interface ExamAttempt {
   is_passed: boolean;
 }
 
+interface ExamResult extends ExamAttempt {
+  exam_title: string;
+}
+
 interface Course {
   id: number;
   title: string;
@@ -48,7 +52,9 @@ const StudentProfile: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [attempts, setAttempts] = useState<ExamAttempt[]>([]);
+  const [examResults, setExamResults] = useState<ExamResult[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
   const [formData, setFormData] = useState<FormData>({
     first_name: '',
     last_name: '',
@@ -64,7 +70,10 @@ const StudentProfile: React.FC = () => {
 
   useEffect(() => {
     fetchProfile();
-    if (user?.role === 'student') fetchStudentStats();
+    if (user?.role === 'student') {
+      fetchStudentStats();
+      fetchEnrolledCourses();
+    }
     if (user?.role === 'instructor') fetchInstructorStats();
   }, [user]);
 
@@ -96,17 +105,36 @@ const StudentProfile: React.FC = () => {
       const exams = json.data || json.exams || json;
       if (Array.isArray(exams) && exams.length > 0) {
         const allAttempts: ExamAttempt[] = [];
-        for (const exam of exams.slice(0, 5)) {
+        const results: ExamResult[] = [];
+        for (const exam of exams.slice(0, 20)) {
           const attRes = await fetch(
             `http://localhost:5000/api/exams/${exam.id}/attempts`,
             { headers }
           );
           const attJson = await attRes.json();
           const att = attJson.data || attJson;
-          if (Array.isArray(att)) allAttempts.push(...att);
+          if (Array.isArray(att)) {
+            allAttempts.push(...att);
+            for (const a of att) {
+              results.push({ ...a, exam_title: exam.title });
+            }
+          }
         }
         setAttempts(allAttempts);
+        setExamResults(results);
       }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchEnrolledCourses = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/courses/enrolled', { headers });
+      if (!res.ok) return;
+      const json = await res.json();
+      const data = json.data || json.courses || json;
+      setEnrolledCourses(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     }
@@ -195,13 +223,13 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
   const getRoleLabel = (role: string) => {
-    if (role === 'admin') return 'Administrator';
-    if (role === 'instructor') return ' Instructor';
-    return ' Student';
+    if (role === 'hod') return 'Head of Department (HOD)';
+    if (role === 'instructor') return 'Instructor';
+    return 'Student';
   };
 
   const getProfileTitle = (role: string) => {
-    if (role === 'admin') return 'Admin Profile';
+    if (role === 'hod') return 'HOD Profile';
     if (role === 'instructor') return 'Instructor Profile';
     return 'Student Profile';
   };
@@ -404,6 +432,68 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
             </div>
           )}
 
+          {/* Exam Results */}
+          {profile.role === 'student' && (
+            <div className="profile-card">
+              <h2> Exam Results</h2>
+              {examResults.length === 0 ? (
+                <p style={{ color: '#9ca3af' }}>No exam results yet.</p>
+              ) : (
+                <div className="courses-list">
+                  {examResults.map((result) => (
+                    <div key={result.id} className="course-item">
+                      <span className="course-title">{result.exam_title}</span>
+                      <div className="course-meta">
+                        <span className="badge">
+                          {result.percentage?.toFixed(1) ?? '0'}%
+                        </span>
+                        <span
+                          className={`badge ${
+                            result.status === 'graded'
+                              ? result.is_passed
+                                ? 'published'
+                                : 'draft'
+                              : ''
+                          }`}
+                        >
+                          {result.status === 'graded'
+                            ? result.is_passed
+                              ? 'Passed'
+                              : 'Failed'
+                            : result.status.replace('_', ' ')}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Enrolled Courses */}
+          {profile.role === 'student' && (
+            <div className="profile-card">
+              <h2> Enrolled Courses</h2>
+              {enrolledCourses.length === 0 ? (
+                <p style={{ color: '#9ca3af' }}>No enrolled courses yet.</p>
+              ) : (
+                <div className="courses-list">
+                  {enrolledCourses.map((course) => (
+                    <div key={course.id} className="course-item">
+                      <span className="course-title">{course.title}</span>
+                      <div className="course-meta">
+                        <span className="badge">{course.level}</span>
+                        <span className={`badge ${course.is_published ? 'published' : 'draft'}`}>
+                          {course.is_published ? 'Active' : 'Draft'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Instructor Stats */}
           {profile.role === 'instructor' && (
             <div className="profile-card">
@@ -428,10 +518,10 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
             </div>
           )}
 
-          {/* Admin Stats */}
-          {profile.role === 'admin' && (
+          {/* HOD Stats */}
+          {profile.role === 'hod' && (
             <div className="profile-card">
-              <h2>🛡️ Admin Access</h2>
+              <h2>🛡️ HOD Access</h2>
               <div className="stats-grid">
                 <div className="stat-item">
                   <span className="stat-label">Access Level</span>
@@ -444,7 +534,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               </div>
               <div style={{ marginTop: '1rem' }}>
                 <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-                  As an admin you have full access to manage users, courses, exams, and system settings.
+                  As an HOD you have full access to manage users, courses, exams, and system settings.
                 </p>
               </div>
             </div>

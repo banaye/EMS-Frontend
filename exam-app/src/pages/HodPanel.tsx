@@ -2,63 +2,63 @@ import React from 'react';
 import { Link, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navigation from '../components/Navigation';
-import AdminDashboard from './Admin_Dashboard';
-import ManageUsers from '../components/admin/ManageUsers';
-import ManageExams from '../components/admin/ManageExams';
-import ManageCourses from '../components/admin/ManageCourses';
-import ManageQuestions from '../components/admin/ManageQuestions';
-import ViewReports from '../components/admin/ViewReports';
-import ExamResults from '../components/admin/ExamResults';
-import '../styles/AdminPanel.css';
+import HodDashboard from './HodDashboard';
+import ManageUsers from '../components/hod/ManageUsers';
+import ManageExams from '../components/hod/ManageExams';
+import ManageCourses from '../components/hod/ManageCourses';
+import ManageQuestions from '../components/hod/ManageQuestions';
+import ViewReports from '../components/hod/ViewReports';
+import ExamResults from '../components/hod/ExamResults';
+import '../styles/HodPanel.css';
 
-const AdminPanel: React.FC = () => {
+const HodPanel: React.FC = () => {
   const { user } = useAuth();
 
   return (
-    <div className="admin-panel">
+    <div className="hod-panel">
       <Navigation />
 
-      <div className="admin-container">
-        <aside className="admin-sidebar">
+      <div className="hod-container">
+        <aside className="hod-sidebar">
           <div className="sidebar-header">
-            <h2> {user?.role === 'admin' ? 'Admin Panel' : 'Instructor Panel'}</h2>
+            <h2> {user?.role === 'hod' ? 'HOD Panel' : 'Instructor Panel'}</h2>
           </div>
 
           <nav className="sidebar-nav">
-            <Link to="/admin" className="nav-item">
+            <Link to="/hod" className="nav-item">
               Dashboard
             </Link>
-            <Link to="/admin/users" className="nav-item">
+            <Link to="/hod/users" className="nav-item">
                Manage Users
             </Link>
-            <Link to="/admin/results" className="nav-item">
+            <Link to="/hod/results" className="nav-item">
              Exam Results
             </Link>
-            <Link to="/admin/exams" className="nav-item">
+            <Link to="/hod/exams" className="nav-item">
               Manage Exams
             </Link>
-            <Link to="/admin/courses" className="nav-item">
+            <Link to="/hod/courses" className="nav-item">
               Manage Courses
             </Link>
-            <Link to="/admin/questions" className="nav-item">
+            <Link to="/hod/questions" className="nav-item">
               Manage Questions
             </Link>
-            <Link to="/admin/reports" className="nav-item">
+            <Link to="/hod/reports" className="nav-item">
               📈Reports & Analytics
             </Link>
           </nav>
         </aside>
 
-        <main className="admin-main">
+        <main className="hod-main">
           <Routes>
-            <Route path="/" element={<AdminDashboard />} />
+            <Route path="/" element={<HodDashboard />} />
             <Route path="users" element={<ManageUsers />} />
             <Route path="exams" element={<ManageExams />} />
             <Route path="courses" element={<ManageCourses />} />
             <Route path="questions" element={<ManageQuestions />} />
             <Route path="reports" element={<ViewReports />} />
             <Route path="results" element={<ExamResults />} />
-            <Route path="*" element={<Navigate to="/admin" />} />
+            <Route path="*" element={<Navigate to="/hod" />} />
           </Routes>
         </main>
       </div>
@@ -66,4 +66,4 @@ const AdminPanel: React.FC = () => {
   );
 };
 
-export default AdminPanel;
+export default HodPanel;

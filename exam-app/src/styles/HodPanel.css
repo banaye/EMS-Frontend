@@ -1,16 +1,16 @@
-.admin-panel {
+.hod-panel {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   background-color: #f5f5f5;
 }
 
-.admin-container {
+.hod-container {
   display: flex;
   flex: 1;
 }
 
-.admin-sidebar {
+.hod-sidebar {
   width: 250px;
   background: linear-gradient(rgb(52, 51, 51));
   color: white;
@@ -62,7 +62,7 @@
   border-left-color: #667eea;
 }
 
-.admin-main {
+.hod-main {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
@@ -283,11 +283,11 @@
 }
 
 @media (max-width: 768px) {
-  .admin-container {
+  .hod-container {
     flex-direction: column;
   }
 
-  .admin-sidebar {
+  .hod-sidebar {
     width: 100%;
     min-height: auto;
     position: static;
@@ -311,7 +311,7 @@
     padding-left: 1.5rem;
   }
 
-  .admin-main {
+  .hod-main {
     padding: 1rem;
   }
 

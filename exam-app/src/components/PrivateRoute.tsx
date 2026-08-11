@@ -15,7 +15,7 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   return <>{children}</>;
 };
 
-export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const HodRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -25,14 +25,14 @@ export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (user.role !== 'admin') {
+  if (user.role !== 'hod') {
     return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
 };
 
-// Allows both admin and instructor
+// Allows both hod and instructor
 export const StaffRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
@@ -43,7 +43,7 @@ export const StaffRoute: React.FC<{ children: React.ReactNode }> = ({ children }
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (user.role !== 'admin' && user.role !== 'instructor') {
+  if (user.role !== 'hod' && user.role !== 'instructor') {
     return <Navigate to="/dashboard" replace />;
   }
 

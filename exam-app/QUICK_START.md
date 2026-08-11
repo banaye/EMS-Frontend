@@ -32,7 +32,7 @@ npm run preview   # Preview production build
 src/
 ├── pages/         → Full page views (Login, Dashboard, etc.)
 ├── components/    → Reusable UI components
-│   └── admin/     → Admin-only components
+│   └── hod/     → HOD-only components
 ├── context/       → Global state (AuthContext)
 ├── services/      → API calls (currently empty - add here)
 ├── styles/        → CSS files (one per page/component)
@@ -50,24 +50,24 @@ Add a test login in `Login.tsx` or use the actual backend:
 const mockUser = {
   name: "Test User",
   email: "test@example.com",
-  role: "student" // or "admin"
+  role: "student" // or "hod"
 };
 ```
 
 ### To Add Role-Based Access
 ```typescript
-// In components that need admin-only access:
+// In components that need hod-only access:
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
-export function AdminFeature() {
+export function HODFeature() {
   const auth = useContext(AuthContext);
   
-  if (auth?.user?.role !== 'admin') {
+  if (auth?.user?.role !== 'hod') {
     return <div>Access Denied</div>;
   }
   
-  return <div>Admin Content</div>;
+  return <div>HOD Content</div>;
 }
 ```
 

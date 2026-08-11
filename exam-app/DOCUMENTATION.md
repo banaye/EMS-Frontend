@@ -19,7 +19,7 @@
 
 The Exam Management System (EMS) is a comprehensive web-based application designed to facilitate exam management, student assessments, and course administration. The system provides distinct interfaces and functionalities for two types of users:
 
-- **Administrators**: Manage courses, exams, questions, users, and view detailed reports
+- **HODs**: Manage courses, exams, questions, users, and view detailed reports
 - **Students**: Take exams, view results, and manage their profiles
 
 The application uses modern web technologies with React as the frontend framework and provides a responsive, user-friendly interface for both roles.
@@ -63,7 +63,7 @@ exam-app/
 │   ├── components/                  # React components
 │   │   ├── Navigation.tsx           # Main navigation component
 │   │   ├── PrivateRoute.tsx         # Protected route wrapper
-│   │   ├── admin/                   # Admin-specific components
+│   │   ├── hod/                   # HOD-specific components
 │   │   │   ├── ManageCourses.tsx
 │   │   │   ├── ManageExams.tsx
 │   │   │   ├── ManageQuestions.tsx
@@ -76,8 +76,8 @@ exam-app/
 │   │   └── AuthContext.tsx          # Authentication state management
 │   ├── hooks/                       # Custom React hooks
 │   ├── pages/                       # Page components
-│   │   ├── Admin_Dashboard.tsx
-│   │   ├── AdminPanel.tsx
+│   │   ├── HodDashboard.tsx
+│   │   ├── HodPanel.tsx
 │   │   ├── CourseManagement.tsx
 │   │   ├── Dashboard.tsx
 │   │   ├── ExamTaking.tsx
@@ -170,10 +170,10 @@ exam-app/
   - Track exam history
   - Performance analytics
 
-### For Administrators
+### For HODs
 - **User Management**: 
   - Create, read, update, delete user accounts
-  - Assign user roles (admin/student)
+  - Assign user roles (hod/student)
   - View user activity logs
 - **Course Management**: 
   - Create and manage courses
@@ -212,7 +212,7 @@ The application follows a **Component-Based Architecture** with **Context API** 
 ├─────────────────────────────────────┤
 │      Pages & Components              │
 │  ┌──────────────────────────────────┐│
-│  │  Admin / Student Components       ││
+│  │  HOD / Student Components       ││
 │  │  └─ Subcomponents                ││
 │  └──────────────────────────────────┘│
 └─────────────────────────────────────┘
@@ -275,7 +275,7 @@ The application follows a **Component-Based Architecture** with **Context API** 
 interface User {
   name: string;
   email: string;
-  role: 'admin' | 'student';
+  role: 'hod' | 'student';
 }
 ```
 
@@ -298,10 +298,10 @@ interface User {
 | `ExamTaking.tsx` | Student | Exam interface with timer and questions |
 | `Results.tsx` | Student | Exam results and score display |
 | `StudentProfile.tsx` | Student | Student profile management |
-| `AdminPanel.tsx` | Admin | Admin layout and navigation |
-| `Admin_Dashboard.tsx` | Admin | Admin overview and statistics |
-| `CourseManagement.tsx` | Admin | Course CRUD operations |
-| `QuestionBank.tsx` | Admin | Question management |
+| `HodPanel.tsx` | HOD | HOD layout and navigation |
+| `HodDashboard.tsx` | HOD | HOD overview and statistics |
+| `CourseManagement.tsx` | HOD | Course CRUD operations |
+| `QuestionBank.tsx` | HOD | Question management |
 
 ### Core Components
 
@@ -316,8 +316,8 @@ interface User {
 - Redirect to login if unauthenticated
 - Wraps protected routes
 
-### Admin Sub-Components
-Located in `components/admin/`:
+### HOD Sub-Components
+Located in `components/hod/`:
 
 - **ManageCourses.tsx**: CRUD interface for courses
 - **ManageExams.tsx**: CRUD interface for exams
@@ -338,15 +338,15 @@ Located in `components/admin/`:
 /exam/:examId              → Exam taking interface (protected)
 /results/:examId           → Exam results (protected)
 /student-profile           → Student profile (protected)
-/course-management         → Course management (admin only)
-/question-bank             → Question bank (admin only)
-/admin/*                   → Admin panel routes (admin only)
-  ├── /admin/dashboard     → Admin dashboard
-  ├── /admin/users         → User management
-  ├── /admin/courses       → Course management
-  ├── /admin/exams         → Exam management
-  ├── /admin/questions     → Question bank
-  └── /admin/reports       → Reports/analytics
+/course-management         → Course management (hod only)
+/question-bank             → Question bank (hod only)
+/hod/*                   → HOD panel routes (hod only)
+  ├── /hod/dashboard     → HOD dashboard
+  ├── /hod/users         → User management
+  ├── /hod/courses       → Course management
+  ├── /hod/exams         → Exam management
+  ├── /hod/questions     → Question bank
+  └── /hod/reports       → Reports/analytics
 ```
 
 ### Route Parameters
@@ -561,28 +561,28 @@ The frontend expects the following backend endpoints:
 **Exams**
 - `GET /api/exams` - List all exams
 - `GET /api/exams/:id` - Get exam details
-- `POST /api/exams` - Create new exam (admin)
-- `PUT /api/exams/:id` - Update exam (admin)
-- `DELETE /api/exams/:id` - Delete exam (admin)
+- `POST /api/exams` - Create new exam (hod)
+- `PUT /api/exams/:id` - Update exam (hod)
+- `DELETE /api/exams/:id` - Delete exam (hod)
 - `POST /api/exams/:id/submit` - Submit exam answers
 
 **Courses**
 - `GET /api/courses` - List courses
-- `POST /api/courses` - Create course (admin)
-- `PUT /api/courses/:id` - Update course (admin)
-- `DELETE /api/courses/:id` - Delete course (admin)
+- `POST /api/courses` - Create course (hod)
+- `PUT /api/courses/:id` - Update course (hod)
+- `DELETE /api/courses/:id` - Delete course (hod)
 
 **Questions**
 - `GET /api/questions` - List questions
-- `POST /api/questions` - Create question (admin)
-- `PUT /api/questions/:id` - Update question (admin)
-- `DELETE /api/questions/:id` - Delete question (admin)
+- `POST /api/questions` - Create question (hod)
+- `PUT /api/questions/:id` - Update question (hod)
+- `DELETE /api/questions/:id` - Delete question (hod)
 
 **Users**
-- `GET /api/users` - List users (admin)
-- `POST /api/users` - Create user (admin)
-- `PUT /api/users/:id` - Update user (admin)
-- `DELETE /api/users/:id` - Delete user (admin)
+- `GET /api/users` - List users (hod)
+- `POST /api/users` - Create user (hod)
+- `PUT /api/users/:id` - Update user (hod)
+- `DELETE /api/users/:id` - Delete user (hod)
 
 **Results**
 - `GET /api/results/:examId` - Get exam results

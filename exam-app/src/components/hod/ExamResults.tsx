@@ -37,7 +37,7 @@ interface ExamSummary {
 
 const ExamResults: React.FC = () => {
   const { user } = useAuth();
-  const isStaff = user?.role === 'admin' || user?.role === 'instructor';
+  const isStaff = user?.role === 'hod' || user?.role === 'instructor';
   
   const [exams, setExams] = useState<Exam[]>([]);
   const [selectedExam, setSelectedExam] = useState<number | null>(null);

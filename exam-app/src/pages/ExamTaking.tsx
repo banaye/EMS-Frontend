@@ -41,7 +41,7 @@ const ExamTaking: React.FC = () => {
 
   // Security refs
   const hasAutoSubmitted = useRef<boolean>(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const token = localStorage.getItem('token');
   const headers = {

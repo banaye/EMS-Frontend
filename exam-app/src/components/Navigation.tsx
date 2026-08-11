@@ -127,14 +127,14 @@ const Navigation: React.FC = () => {
       </div>
       <nav className="nav-links">
         <Link to="/dashboard">Dashboard</Link>
-        {(user?.role === 'admin' || user?.role === 'instructor') && (
+        {(user?.role === 'hod' || user?.role === 'instructor') && (
           <Link to="/question-bank">Question Bank</Link>
         )}
         <Link to="/courses">Courses</Link>
         <Link to="/profile">Profile</Link>
-        {(user?.role === 'admin' || user?.role === 'instructor') && (
-          <Link to="/admin">
-            {user?.role === 'admin' ? 'Admin' : 'Instructor Panel'}
+        {(user?.role === 'hod' || user?.role === 'instructor') && (
+          <Link to="/hod">
+            {user?.role === 'hod' ? 'HOD' : 'Instructor Panel'}
           </Link>
         )}
       </nav>

@@ -8,7 +8,7 @@ interface User {
   email: string;
   first_name: string;
   last_name: string;
-  role: 'student' | 'instructor' | 'admin';
+  role: 'student' | 'instructor' | 'hod';
   is_active: boolean;
   is_verified: boolean;
   created_at: string;
@@ -17,7 +17,7 @@ interface User {
 
 const ManageUsers: React.FC = () => {
   const { user: currentUser } = useAuth();
-  const isAdmin = currentUser?.role === 'admin';
+  const isHod = currentUser?.role === 'hod';
 
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +54,7 @@ const ManageUsers: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:5000/api/admin/users', {
+      const response = await fetch('http://localhost:5000/api/hod/users', {
         headers,
       });
       if (!response.ok) throw new Error(`Failed to fetch users: ${response.status}`);
@@ -70,7 +70,7 @@ const ManageUsers: React.FC = () => {
 
   const handleAddUser = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/users', {
+      const response = await fetch('http://localhost:5000/api/hod/users', {
         method: 'POST',
         headers,
         body: JSON.stringify(newUser),
@@ -90,7 +90,7 @@ const ManageUsers: React.FC = () => {
   const handleUpdateUser = async () => {
     if (!selectedUser) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/users/${selectedUser.id}`, {
+      const response = await fetch(`http://localhost:5000/api/hod/users/${selectedUser.id}`, {
         method: 'PATCH',
         headers,
         body: JSON.stringify(editUser),
@@ -109,7 +109,7 @@ const ManageUsers: React.FC = () => {
   const handleDeleteUser = async (userId: number) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
+      const response = await fetch(`http://localhost:5000/api/hod/users/${userId}`, {
         method: 'DELETE',
         headers,
       });
@@ -125,7 +125,7 @@ const ManageUsers: React.FC = () => {
     if (!window.confirm(`Are you sure you want to ${action} ${user.username}?`)) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/users/${user.id}/toggle-active`,
+        `http://localhost:5000/api/hod/users/${user.id}/toggle-active`,
         { method: 'PATCH', headers }
       );
       if (!response.ok) throw new Error(`Failed to ${action} user`);
@@ -157,7 +157,7 @@ const ManageUsers: React.FC = () => {
   });
 
   const getRoleColor = (role: string) => {
-    if (role === 'admin') return '#dc2626';
+    if (role === 'hod') return '#dc2626';
     if (role === 'instructor') return '#059669';
     return '#3b82f6';
   };
@@ -169,7 +169,7 @@ const ManageUsers: React.FC = () => {
     <div className="manage-users">
       <div className="page-header">
         <h1>Manage Users</h1>
-        {isAdmin && (
+        {isHod && (
           <button onClick={() => setShowCreateModal(true)} className="btn btn-primary">
             + Add New User
           </button>
@@ -192,7 +192,7 @@ const ManageUsers: React.FC = () => {
           <option value="all">All Roles</option>
           <option value="student">Students</option>
           <option value="instructor">Instructors</option>
-          <option value="admin">Admins</option>
+          <option value="hod">HODs</option>
         </select>
       </div>
 
@@ -230,7 +230,7 @@ const ManageUsers: React.FC = () => {
                   </span>
                 </td>
                 <td>
-                  {isAdmin ? (
+                  {isHod ? (
                     <button
                       onClick={() => handleToggleStatus(u)}
                       className={`status-toggle ${u.is_active ? 'active' : 'inactive'}`}
@@ -256,7 +256,7 @@ const ManageUsers: React.FC = () => {
                   >
                       View
                   </button>
-                  {isAdmin && (
+                  {isHod && (
                     <>
                       <button
                         onClick={() => handleEditClick(u)}
@@ -282,8 +282,8 @@ const ManageUsers: React.FC = () => {
         )}
       </div>
 
-      {/* Create Modal — admin only */}
-      {showCreateModal && isAdmin && (
+      {/* Create Modal — hod only */}
+      {showCreateModal && isHod && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
@@ -335,7 +335,7 @@ const ManageUsers: React.FC = () => {
                 >
                   <option value="student">Student</option>
                   <option value="instructor">Instructor</option>
-                  <option value="admin">Admin</option>
+                  <option value="hod">HOD</option>
                 </select>
               </div>
               <div className="form-group">
@@ -357,8 +357,8 @@ const ManageUsers: React.FC = () => {
         </div>
       )}
 
-      {/* Edit Modal — admin only */}
-      {showEditModal && isAdmin && selectedUser && (
+      {/* Edit Modal — hod only */}
+      {showEditModal && isHod && selectedUser && (
         <div className="modal">
           <div className="modal-content">
             <div className="modal-header">
@@ -398,7 +398,7 @@ const ManageUsers: React.FC = () => {
                 >
                   <option value="student">Student</option>
                   <option value="instructor">Instructor</option>
-                  <option value="admin">Admin</option>
+                  <option value="hod">HOD</option>
                 </select>
               </div>
               <div className="form-group">
@@ -458,7 +458,7 @@ const ManageUsers: React.FC = () => {
             </div>
             <div className="modal-footer">
               <button onClick={() => setShowViewModal(false)} className="btn btn-secondary">Close</button>
-              {isAdmin && (
+              {isHod && (
                 <button
                   onClick={() => { setShowViewModal(false); handleEditClick(selectedUser); }}
                   className="btn btn-primary"

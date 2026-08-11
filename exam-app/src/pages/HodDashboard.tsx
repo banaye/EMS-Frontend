@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/Admin_Dashboard.css';
+import '../styles/HodDashboard.css';
 
 interface DashboardStats {
   totalExams: number;
@@ -7,7 +7,7 @@ interface DashboardStats {
   totalQuestions: number;
 }
 
-const AdminDashboard: React.FC = () => {
+const HodDashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -58,7 +58,7 @@ const AdminDashboard: React.FC = () => {
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="admin-dashboard">
+    <div className="hod-dashboard">
       <div className="dashboard-header">
         <h1>Dashboard Overview</h1>
         <p>System Statistics & Management</p>
@@ -95,4 +95,4 @@ const AdminDashboard: React.FC = () => {
   );
 };
 
-export default AdminDashboard;
+export default HodDashboard;
