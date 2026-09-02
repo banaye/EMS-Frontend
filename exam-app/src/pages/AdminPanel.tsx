@@ -2,14 +2,19 @@ import React from 'react';
 import { Link, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navigation from '../components/Navigation';
-import AdminDashboard from './AdminDashboard';
-import ManageUsers from '../components/admin/ManageUsers';
-import ManageExams from '../components/admin/ManageExams';
-import ManageCourses from '../components/admin/ManageCourses';
-import ManageQuestions from '../components/admin/ManageQuestions';
-import ViewReports from '../components/admin/ViewReports';
-import ExamResults from '../components/admin/ExamResults';
+import ManageUsers from '../components/hod/ManageUsers';
+import ManageExams from '../components/hod/ManageExams';
+import ManageCourses from '../components/hod/ManageCourses';
+import ManageQuestions from '../components/hod/ManageQuestions';
+import ViewReports from '../components/hod/ViewReports';
+import ExamResults from '../components/hod/ExamResults';
 import '../styles/AdminPanel.css';
+
+const AdminDashboard: React.FC = () => (
+  <section>
+    <h1>Dashboard</h1>
+  </section>
+);
 
 const AdminPanel: React.FC = () => {
   const { user } = useAuth();
@@ -21,7 +26,7 @@ const AdminPanel: React.FC = () => {
       <div className="admin-container">
         <aside className="admin-sidebar">
           <div className="sidebar-header">
-            <h2> {user?.role === 'admin' ? 'Admin Panel' : 'Instructor Panel'}</h2>
+            <h2>{user?.role === 'hod' ? 'Admin Panel' : 'Instructor Panel'}</h2>
           </div>
 
           <nav className="sidebar-nav">
