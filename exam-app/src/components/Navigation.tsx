@@ -126,15 +126,15 @@ const Navigation: React.FC = () => {
         <Link to="/dashboard"><span>EMS</span></Link>
       </div>
       <nav className="nav-links">
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/dashboard">DASHBOARD</Link>
         {(user?.role === 'hod' || user?.role === 'instructor') && (
-          <Link to="/question-bank">Question Bank</Link>
+          <Link to="/question-bank">QUESTION BANK</Link>
         )}
-        <Link to="/courses">Courses</Link>
-        <Link to="/profile">Profile</Link>
+        <Link to="/courses">COURSES</Link>
+        <Link to="/profile">PROFILE</Link>
         {(user?.role === 'hod' || user?.role === 'instructor') && (
           <Link to="/hod">
-            {user?.role === 'hod' ? 'HOD' : 'Instructor Panel'}
+            {user?.role === 'hod' ? 'HOD' : 'INSTRUCTOR'}
           </Link>
         )}
       </nav>
@@ -192,7 +192,7 @@ const Navigation: React.FC = () => {
           {user?.first_name || user?.username || 'Guest'}
         </span>
         <button type="button" onClick={handleLogout} className="nav-logout">
-          Logout
+          LOGOUT
         </button>
       </div>
     </header>
