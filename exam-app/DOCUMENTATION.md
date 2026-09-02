@@ -125,7 +125,7 @@ exam-app/
    - Create a `.env` file in the root directory
    - Add API endpoint configuration:
      ```
-     VITE_API_URL=http://localhost:5000
+    VITE_API_URL=https://ems-backend-6jgw.onrender.com/api
      ```
 
 4. **Start development server**
@@ -450,7 +450,7 @@ API calls should be organized in `src/services/`:
 // Example: src/services/examService.ts
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://ems-backend-6jgw.onrender.com/api';
 
 export const examService = {
   async getExams() {

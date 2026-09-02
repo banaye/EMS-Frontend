@@ -1,6 +1,8 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation';
 import '../styles/CourseManagement.css';
+import { API_ORIGIN, API_URL } from '../config';
+
 
 interface CourseResource {
   id: number;
@@ -43,7 +45,7 @@ const CourseManagement: React.FC = () => {
   });
 
   const getFileUrl = (url: string) => {
-    const fullUrl = url.startsWith('http') ? url : `http://localhost:5000${url}`;
+    const fullUrl = url.startsWith('http') ? url : `${API_ORIGIN}${url}`;
     console.log('File URL:', fullUrl);
     return fullUrl;
   }
@@ -55,7 +57,7 @@ const CourseManagement: React.FC = () => {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/courses', {
+      const response = await fetch(`${API_URL}/courses`, {
         headers: getHeaders(),
       });
       if (!response.ok) throw new Error('Failed to fetch courses');
@@ -78,7 +80,7 @@ const CourseManagement: React.FC = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/courses/${course.id}/resources`,
+        `${API_URL}/courses/${course.id}/resources`,
         { headers: getHeaders() }
       );
       const json = await res.json();
@@ -123,7 +125,7 @@ const CourseManagement: React.FC = () => {
     setEnrollingId(courseId);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/courses/${courseId}/enroll`,
+        `${API_URL}/courses/${courseId}/enroll`,
         { method: 'POST', headers: getHeaders() }
       );
       if (response.ok) {
@@ -140,11 +142,11 @@ const CourseManagement: React.FC = () => {
   };
 
   const getResourceIcon = (type: string) => {
-    if (type === 'pdf') return '📄';
-    if (type === 'video') return '🎥';
-    if (type === 'audio') return '🎵';
-    if (type === 'link') return '🔗';
-    return '📁';
+    if (type === 'pdf') return '??';
+    if (type === 'video') return '??';
+    if (type === 'audio') return '??';
+    if (type === 'link') return '??';
+    return '??';
   };
 
   const filteredCourses = courses.filter((course) => {
@@ -192,7 +194,7 @@ const CourseManagement: React.FC = () => {
 
                 <div className="course-meta">
                   <span>{course.level}</span>
-                  <span>⏱️ {course.duration_hours}hrs</span>
+                  <span>?? {course.duration_hours}hrs</span>
                   <span> {course.enrolled_count} students</span>
                   {course.rating > 0 && (
                     <span> {course.rating.toFixed(1)} ({course.rating_count})</span>
@@ -219,7 +221,7 @@ const CourseManagement: React.FC = () => {
                     onClick={() => fetchResources(course)}
                     className="download-btn-small"
                   >
-                    📂 Materials
+                    ?? Materials
                   </button>
                 </div>
               </div>
@@ -233,8 +235,8 @@ const CourseManagement: React.FC = () => {
         <div className="modal" onClick={() => setShowResourcesModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>📂 {selectedCourse.title} — Materials</h2>
-              <button onClick={() => setShowResourcesModal(false)} className="close-btn">×</button>
+              <h2>?? {selectedCourse.title} � Materials</h2>
+              <button onClick={() => setShowResourcesModal(false)} className="close-btn">�</button>
             </div>
             <div className="modal-body">
               {resourcesLoading ? (

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/HodDashboard.css';
+import { API_URL } from '../config';
+
 
 interface DashboardStats {
   totalExams: number;
@@ -25,9 +27,9 @@ const HodDashboard: React.FC = () => {
         Authorization: `Bearer ${token}`,
       };
       const [examsRes, coursesRes, questionsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/exams', { headers: getHeaders }),
-        fetch('http://localhost:5000/api/courses', { headers: getHeaders }),
-        fetch('http://localhost:5000/api/questions', { headers: getHeaders }),
+        fetch(`${API_URL}/exams`, { headers: getHeaders }),
+        fetch(`${API_URL}/courses`, { headers: getHeaders }),
+        fetch(`${API_URL}/questions`, { headers: getHeaders }),
       ]);
 
       const [examsJson, coursesJson, questionsJson] = await Promise.all([

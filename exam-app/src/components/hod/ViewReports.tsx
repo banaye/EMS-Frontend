@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/ViewReports.css';
+import { API_URL } from '../../config';
+
 
 interface Report {
   id: string;
@@ -67,10 +69,10 @@ const ViewReports: React.FC = () => {
       const headers = getAuthHeaders();
       
       const [studentsRes, coursesRes, examsRes, summaryRes] = await Promise.all([
-        fetch('http://localhost:5000/api/reports/students-performance', { headers }),
-        fetch('http://localhost:5000/api/reports/courses-analytics', { headers }),
-        fetch('http://localhost:5000/api/reports/exams-analytics', { headers }),
-        fetch('http://localhost:5000/api/reports/analytics', { headers }),
+        fetch(`${API_URL}/reports/students-performance`, { headers }),
+        fetch(`${API_URL}/reports/courses-analytics`, { headers }),
+        fetch(`${API_URL}/reports/exams-analytics`, { headers }),
+        fetch(`${API_URL}/reports/analytics`, { headers }),
       ]);
       
       if (studentsRes.ok) {

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import '../styles/ExamTaking.css';
+import { API_URL } from '../config';
+
 
 interface Option {
   id: number;
@@ -59,7 +61,7 @@ const ExamTaking: React.FC = () => {
     
     try {
       const res = await fetch(
-        `http://localhost:5000/api/exams/${examId}/attempts/${attemptId}/submit`,
+        `${API_URL}/exams/${examId}/attempts/${attemptId}/submit`,
         { method: 'POST', headers }
       );
       if (res.ok) {
@@ -133,7 +135,7 @@ const ExamTaking: React.FC = () => {
   const checkIfExamAlreadyTaken = async () => {
     try {
       // Check for existing completed attempt via API
-      const checkRes = await fetch(`http://localhost:5000/api/exams/${examId}/attempts`, { headers });
+      const checkRes = await fetch(`${API_URL}/exams/${examId}/attempts`, { headers });
       if (checkRes.ok) {
         const json = await checkRes.json();
         const attemptsData = json.data || json;
@@ -189,7 +191,7 @@ const ExamTaking: React.FC = () => {
 
   const initExam = async () => {
     try {
-      const examRes = await fetch(`http://localhost:5000/api/exams/${examId}`, { headers });
+      const examRes = await fetch(`${API_URL}/exams/${examId}`, { headers });
       if (!examRes.ok) throw new Error('Failed to fetch exam');
       const examJson = await examRes.json();
       const examData = examJson.data || examJson;
@@ -197,7 +199,7 @@ const ExamTaking: React.FC = () => {
       setExam({ ...examData, duration_minutes: durationMinutes });
       setTimeLeft(durationMinutes * 60);
 
-      const attemptRes = await fetch(`http://localhost:5000/api/exams/${examId}/attempts`, {
+      const attemptRes = await fetch(`${API_URL}/exams/${examId}/attempts`, {
         method: 'POST',
         headers,
       });
@@ -206,7 +208,7 @@ const ExamTaking: React.FC = () => {
       const attempt = attemptJson.data || attemptJson;
       setAttemptId(attempt.id);
 
-      const questionsRes = await fetch(`http://localhost:5000/api/exams/${examId}/questions`, { headers });
+      const questionsRes = await fetch(`${API_URL}/exams/${examId}/questions`, { headers });
       if (!questionsRes.ok) throw new Error('Failed to fetch questions');
       const questionsJson = await questionsRes.json();
       const questionsData = questionsJson.data || questionsJson;
@@ -229,7 +231,7 @@ const ExamTaking: React.FC = () => {
 
     if (!attemptId) return;
     try {
-      await fetch(`http://localhost:5000/api/exams/${examId}/attempts/${attemptId}/answers`, {
+      await fetch(`${API_URL}/exams/${examId}/attempts/${attemptId}/answers`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ question_id: questionId, ...value }),
@@ -247,7 +249,7 @@ const ExamTaking: React.FC = () => {
     setSubmitting(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/api/exams/${examId}/attempts/${attemptId}/submit`,
+        `${API_URL}/exams/${examId}/attempts/${attemptId}/submit`,
         { method: 'POST', headers }
       );
       if (!res.ok) throw new Error('Failed to submit exam');

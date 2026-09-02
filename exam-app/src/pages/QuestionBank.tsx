@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Navigation from '../components/Navigation.tsx';
 import '../styles/QuestionBank.css';
+import { API_URL } from '../config';
+
 
 interface Option {
   id: number;
@@ -47,7 +49,7 @@ const QuestionBank: React.FC = () => {
       if (typeFilter !== 'all') params.append('type', typeFilter);
 
       const response = await fetch(
-        `http://localhost:5000/api/questions?${params.toString()}`,
+        `${API_URL}/questions?${params.toString()}`,
         { headers }
       );
       if (!response.ok) throw new Error('Failed to fetch questions');

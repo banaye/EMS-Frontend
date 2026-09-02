@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import '../../styles/ManageCourses.css';
+import { API_ORIGIN, API_URL } from '../../config';
+
 
 interface CourseResource {
   id: number;
@@ -68,7 +70,7 @@ const ManageCourses: React.FC = () => {
   });
 
   const getFileUrl = (url: string) =>
-    url.startsWith('http') ? url : `http://localhost:5000${url}`;
+    url.startsWith('http') ? url : `${API_ORIGIN}${url}`;
 
   useEffect(() => {
     fetchCourses();
@@ -77,7 +79,7 @@ const ManageCourses: React.FC = () => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/courses', {
+      const response = await fetch(`${API_URL}/courses`, {
         headers: getAuthHeaders(),
       });
       if (response.ok) {
@@ -97,7 +99,7 @@ const ManageCourses: React.FC = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await fetch(
-        `http://localhost:5000/api/courses/${course.id}/resources`,
+        `${API_URL}/courses/${course.id}/resources`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const json = await res.json();
@@ -122,7 +124,7 @@ const ManageCourses: React.FC = () => {
 
   const handleAddCourse = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/courses', {
+      const response = await fetch(`${API_URL}/courses`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(newCourse),
@@ -142,7 +144,7 @@ const ManageCourses: React.FC = () => {
 
   const handleUpdateCourse = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/courses/${editCourse.id}`, {
+      const response = await fetch(`${API_URL}/courses/${editCourse.id}`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
         body: JSON.stringify({
@@ -169,7 +171,7 @@ const ManageCourses: React.FC = () => {
   const handleDeleteCourse = async (courseId: string) => {
     if (!window.confirm('Are you sure you want to delete this course?')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/courses/${courseId}`, {
+      const response = await fetch(`${API_URL}/courses/${courseId}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
       });
@@ -195,7 +197,7 @@ const ManageCourses: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/courses/${selectedCourse.id}/upload-resource`,
+        `${API_URL}/courses/${selectedCourse.id}/upload-resource`,
         {
           method: 'POST',
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -225,7 +227,7 @@ const ManageCourses: React.FC = () => {
     if (!window.confirm('Are you sure you want to delete this resource?')) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/api/courses/resources/${resourceId}`,
+        `${API_URL}/courses/resources/${resourceId}`,
         { method: 'DELETE', headers: getAuthHeaders() }
       );
       if (response.ok && selectedCourse) {

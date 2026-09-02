@@ -3,7 +3,7 @@
 ## Base Configuration
 
 ```
-Base URL: http://localhost:5000 (development)
+Base URL: https://ems-backend-6jgw.onrender.com/api
 API Version: v1
 Authentication: Bearer Token (JWT)
 Content-Type: application/json

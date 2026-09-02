@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/ManageExams.css';
+import { API_URL } from '../../config';
+
 
 interface Question {
   id: number;
@@ -77,7 +79,7 @@ const ManageExams: React.FC = () => {
 
   const fetchExams = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/exams', { headers });
+      const response = await fetch(`${API_URL}/exams`, { headers });
       if (response.ok) {
         const json = await response.json();
         const examsData = json.data || json.exams || json;
@@ -92,7 +94,7 @@ const ManageExams: React.FC = () => {
 
   const fetchTopics = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/questions', { headers });
+      const response = await fetch(`${API_URL}/questions`, { headers });
       if (response.ok) {
         const json = await response.json();
         const questionsData = json.data || json.questions || json;
@@ -107,7 +109,7 @@ const ManageExams: React.FC = () => {
 
   const fetchAvailableQuestions = async () => {
     try {
-      let url = 'http://localhost:5000/api/questions';
+      let url = `${API_URL}/questions`;
       const params = new URLSearchParams();
       if (topicFilter !== 'all') params.append('topic', topicFilter);
       if (params.toString()) url += `?${params.toString()}`;
@@ -125,7 +127,7 @@ const ManageExams: React.FC = () => {
 
   const fetchExamQuestions = async (examId: number) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/exams/${examId}/questions`, { headers });
+      const response = await fetch(`${API_URL}/exams/${examId}/questions`, { headers });
       if (response.ok) {
         const json = await response.json();
         const questions = json.data || json.questions || json;
@@ -148,7 +150,7 @@ const ManageExams: React.FC = () => {
     
     setAddingQuestions(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/exams/${selectedExam.id}/questions`, {
+      const response = await fetch(`${API_URL}/exams/${selectedExam.id}/questions`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ question_id: questionId }),
@@ -175,7 +177,7 @@ const ManageExams: React.FC = () => {
     if (!window.confirm('Remove this question from the exam?')) return;
     
     try {
-      const response = await fetch(`http://localhost:5000/api/exams/${selectedExam.id}/questions/${questionId}`, {
+      const response = await fetch(`${API_URL}/exams/${selectedExam.id}/questions/${questionId}`, {
         method: 'DELETE',
         headers,
       });
@@ -194,7 +196,7 @@ const ManageExams: React.FC = () => {
 
   const handleAddExam = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/exams', {
+      const response = await fetch(`${API_URL}/exams`, {
         method: 'POST',
         headers,
         body: JSON.stringify(newExam),
@@ -221,7 +223,7 @@ const ManageExams: React.FC = () => {
 
   const handleUpdateExam = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/exams/${editExam.id}`, {
+      const response = await fetch(`${API_URL}/exams/${editExam.id}`, {
         method: 'PATCH',
         headers,
         body: JSON.stringify({
@@ -250,7 +252,7 @@ const ManageExams: React.FC = () => {
   const handleDeleteExam = async (examId: number) => {
     if (window.confirm('Are you sure you want to delete this exam?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/exams/${examId}`, {
+        const response = await fetch(`${API_URL}/exams/${examId}`, {
           method: 'DELETE',
           headers,
         });

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navigation from '../components/Navigation';
 import '../styles/Dashboard.css';
+import { API_URL } from '../config';
 
 interface Exam {
   id: number;
@@ -42,7 +43,7 @@ const Dashboard: React.FC = () => {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No authentication token found');
 
-      const response = await fetch('http://localhost:5000/api/exams', {
+      const response = await fetch(`${API_URL}/exams`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',

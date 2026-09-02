@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import '../../styles/ExamResults.css';
+import { API_URL } from '../../config';
+
 
 interface Attempt {
   id: number;
@@ -71,7 +73,7 @@ const ExamResults: React.FC = () => {
   const fetchExams = async () => {
     setExamsLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/exams', { headers });
+      const res = await fetch(`${API_URL}/exams`, { headers });
       const json = await res.json();
       const data = json.data || json.exams || json;
       setExams(Array.isArray(data) ? data : []);
@@ -86,7 +88,7 @@ const ExamResults: React.FC = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/api/exams/${examId}/attempts`,
+        `${API_URL}/exams/${examId}/attempts`,
         { headers }
       );
       const json = await res.json();
@@ -102,7 +104,7 @@ const ExamResults: React.FC = () => {
   const fetchSummary = async (examId: number) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/exams/${examId}/results/summary`,
+        `${API_URL}/exams/${examId}/results/summary`,
         { headers }
       );
       const json = await res.json();
@@ -115,7 +117,7 @@ const ExamResults: React.FC = () => {
   const fetchAttemptDetail = async (attempt: Attempt) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/exams/${attempt.exam_id}/attempts/${attempt.id}`,
+        `${API_URL}/exams/${attempt.exam_id}/attempts/${attempt.id}`,
         { headers }
       );
       const json = await res.json();
@@ -134,7 +136,7 @@ const ExamResults: React.FC = () => {
     
     setDeletingId(attemptId);
     try {
-      const response = await fetch(`http://localhost:5000/api/exams/${selectedExam}/attempts/${attemptId}/delete`, {
+      const response = await fetch(`${API_URL}/exams/${selectedExam}/attempts/${attemptId}/delete`, {
         method: 'DELETE',
         headers,
       });

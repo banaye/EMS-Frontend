@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/ManageQuestions.css';
+import { API_URL } from '../../config';
+
 
 interface Option {
   text: string;
@@ -74,7 +76,7 @@ const ManageQuestions: React.FC = () => {
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/questions', { headers });
+      const response = await fetch(`${API_URL}/questions`, { headers });
       if (response.ok) {
         const json = await response.json();
         const questionsData = json.data || json.questions || json;
@@ -89,7 +91,7 @@ const ManageQuestions: React.FC = () => {
 
   const fetchQuestionDetails = async (questionId: number) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/questions/${questionId}`, { headers });
+      const response = await fetch(`${API_URL}/questions/${questionId}`, { headers });
       if (response.ok) {
         const json = await response.json();
         const questionData = json.data || json;
@@ -121,7 +123,7 @@ const ManageQuestions: React.FC = () => {
         payload.keywords = newQuestion.keywords;
       }
 
-      const response = await fetch('http://localhost:5000/api/questions', {
+      const response = await fetch(`${API_URL}/questions`, {
         method: 'POST',
         headers,
         body: JSON.stringify(payload),
@@ -157,7 +159,7 @@ const ManageQuestions: React.FC = () => {
         payload.keywords = editQuestion.keywords;
       }
 
-      const response = await fetch(`http://localhost:5000/api/questions/${editQuestion.id}`, {
+      const response = await fetch(`${API_URL}/questions/${editQuestion.id}`, {
         method: 'PATCH',
         headers,
         body: JSON.stringify(payload),
@@ -179,7 +181,7 @@ const ManageQuestions: React.FC = () => {
   const handleDeleteQuestion = async (questionId: number) => {
     if (window.confirm('Are you sure you want to delete this question?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/questions/${questionId}`, {
+        const response = await fetch(`${API_URL}/questions/${questionId}`, {
           method: 'DELETE',
           headers,
         });

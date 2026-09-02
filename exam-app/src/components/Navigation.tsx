@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Navigation.css';
+import { API_URL } from '../config';
 
 interface Notification {
   id: number;
@@ -31,7 +32,7 @@ const Navigation: React.FC = () => {
     if (!user) return;
     
     try {
-      const response = await fetch('http://localhost:5000/api/notifications', {
+      const response = await fetch(`${API_URL}/notifications`, {
         headers: getAuthHeaders(),
       });
       if (response.ok) {
@@ -49,7 +50,7 @@ const Navigation: React.FC = () => {
 
   const markAsRead = async (notificationId: number) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/notifications/${notificationId}/read`, {
+      const response = await fetch(`${API_URL}/notifications/${notificationId}/read`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
       });
@@ -68,7 +69,7 @@ const Navigation: React.FC = () => {
 
   const markAllAsRead = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/notifications/read-all', {
+      const response = await fetch(`${API_URL}/notifications/read-all`, {
         method: 'POST',
         headers: getAuthHeaders(),
       });

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { API_URL } from '../config';
 import Navigation from '../components/Navigation.tsx';
 import '../styles/Results.css';
 
@@ -45,7 +46,7 @@ const Results: React.FC = () => {
   const fetchResults = async () => {
     try {
       // Get exam title
-      const examRes = await fetch(`http://localhost:5000/api/exams/${examId}`, { headers });
+      const examRes = await fetch(`${API_URL}/exams/${examId}`, { headers });
       if (!examRes.ok) throw new Error('Failed to fetch exam');
       const examJson = await examRes.json();
       const examData = examJson.data || examJson;
@@ -53,7 +54,7 @@ const Results: React.FC = () => {
 
       // Get attempts list and pick the latest graded one
       const attemptsRes = await fetch(
-        `http://localhost:5000/api/exams/${examId}/attempts`,
+        `${API_URL}/exams/${examId}/attempts`,
         { headers }
       );
       if (!attemptsRes.ok) throw new Error('Failed to fetch attempts');
@@ -73,7 +74,7 @@ const Results: React.FC = () => {
 
       // Get full attempt detail with answers
       const detailRes = await fetch(
-        `http://localhost:5000/api/exams/${examId}/attempts/${graded.id}`,
+        `${API_URL}/exams/${examId}/attempts/${graded.id}`,
         { headers }
       );
       if (!detailRes.ok) throw new Error('Failed to fetch attempt detail');

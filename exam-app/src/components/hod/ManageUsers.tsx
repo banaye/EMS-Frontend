@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import '../../styles/ManageUsers.css';
+import { API_URL } from '../../config';
+
 
 interface User {
   id: number;
@@ -54,7 +56,7 @@ const ManageUsers: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:5000/api/hod/users', {
+      const response = await fetch(`${API_URL}/hod/users`, {
         headers,
       });
       if (!response.ok) throw new Error(`Failed to fetch users: ${response.status}`);
@@ -70,7 +72,7 @@ const ManageUsers: React.FC = () => {
 
   const handleAddUser = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/hod/users', {
+      const response = await fetch(`${API_URL}/hod/users`, {
         method: 'POST',
         headers,
         body: JSON.stringify(newUser),
@@ -90,7 +92,7 @@ const ManageUsers: React.FC = () => {
   const handleUpdateUser = async () => {
     if (!selectedUser) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/hod/users/${selectedUser.id}`, {
+      const response = await fetch(`${API_URL}/hod/users/${selectedUser.id}`, {
         method: 'PATCH',
         headers,
         body: JSON.stringify(editUser),
@@ -109,7 +111,7 @@ const ManageUsers: React.FC = () => {
   const handleDeleteUser = async (userId: number) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/hod/users/${userId}`, {
+      const response = await fetch(`${API_URL}/hod/users/${userId}`, {
         method: 'DELETE',
         headers,
       });
@@ -125,7 +127,7 @@ const ManageUsers: React.FC = () => {
     if (!window.confirm(`Are you sure you want to ${action} ${user.username}?`)) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/api/hod/users/${user.id}/toggle-active`,
+        `${API_URL}/hod/users/${user.id}/toggle-active`,
         { method: 'PATCH', headers }
       );
       if (!response.ok) throw new Error(`Failed to ${action} user`);

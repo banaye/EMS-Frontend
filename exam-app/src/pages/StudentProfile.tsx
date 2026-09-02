@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Navigation from '../components/Navigation.tsx';
 import '../styles/StudentProfile.css';
+import { API_URL } from '../config';
 
 interface Profile {
   id: number;
@@ -79,7 +80,7 @@ const StudentProfile: React.FC = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/me', { headers });
+      const response = await fetch(`${API_URL}/auth/me`, { headers });
       if (!response.ok) throw new Error('Failed to fetch profile');
       const json = await response.json();
       const data: Profile = json.data || json;
@@ -100,7 +101,7 @@ const StudentProfile: React.FC = () => {
 
   const fetchStudentStats = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/exams', { headers });
+      const res = await fetch(`${API_URL}/exams`, { headers });
       const json = await res.json();
       const exams = json.data || json.exams || json;
       if (Array.isArray(exams) && exams.length > 0) {
@@ -108,7 +109,7 @@ const StudentProfile: React.FC = () => {
         const results: ExamResult[] = [];
         for (const exam of exams.slice(0, 20)) {
           const attRes = await fetch(
-            `http://localhost:5000/api/exams/${exam.id}/attempts`,
+            `${API_URL}/exams/${exam.id}/attempts`,
             { headers }
           );
           const attJson = await attRes.json();
@@ -130,7 +131,7 @@ const StudentProfile: React.FC = () => {
 
   const fetchEnrolledCourses = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/courses/enrolled', { headers });
+      const res = await fetch(`${API_URL}/courses/enrolled`, { headers });
       if (!res.ok) return;
       const json = await res.json();
       const data = json.data || json.courses || json;
@@ -142,7 +143,7 @@ const StudentProfile: React.FC = () => {
 
   const fetchInstructorStats = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/courses', { headers });
+      const res = await fetch(`${API_URL}/courses`, { headers });
       const json = await res.json();
       const data = json.data || json.courses || json;
       setCourses(Array.isArray(data) ? data : []);
@@ -161,7 +162,7 @@ const StudentProfile: React.FC = () => {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      const response = await fetch('http://localhost:5000/api/auth/me', {
+      const response = await fetch(`${API_URL}/auth/me`, {
         method: 'PATCH',
         headers,
         body: JSON.stringify(formData),
@@ -201,7 +202,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     reader.onloadend = async () => {
       const base64 = reader.result as string;
 
-      const response = await fetch('http://localhost:5000/api/auth/me', {
+      const response = await fetch(`${API_URL}/auth/me`, {
         method: 'PATCH',
         headers,
         body: JSON.stringify({ avatar_url: base64 }),
