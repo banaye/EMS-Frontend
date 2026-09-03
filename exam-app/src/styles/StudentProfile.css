@@ -1,272 +1,337 @@
 .profile-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: whitesmoke;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.profile-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.profile-header h1 {
+  color: #1f2937;
+  margin: 0;
+}
+
+.profile-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.role-badge {
+  display: inline-block;
+  background: #ede9fe;
+  color: #6366f1;
+  padding: 0.3rem 0.875rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 0.375rem;
+}
+
+/* Profile Grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.profile-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.profile-card h2 {
+  color: #1f2937;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #6366f1;
+  font-size: 1.1rem;
+}
+
+/* Courses List */
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.courses-list li {
+  background-color: #f9fafb;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #6366f1;
+  font-size: 0.9rem;
+}
+
+.course-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.course-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.course-meta {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.badge.published {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge.draft {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  padding: 1.25rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-bottom: 0.375rem;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-group input:disabled {
+  background-color: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.edit-btn,
+.save-btn {
+  padding: 0.75rem 1.75rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-btn {
+  background-color: #1f2937;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #374151;
+}
+
+.save-btn {
+  background-color: #10b981;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #059669;
+}
+
+/* Avatar Section */
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.avatar-upload-btn {
+  font-size: 0.8rem;
+  color: #6366f1;
+  cursor: pointer;
+  padding: 0.375rem 1rem;
+  border: 1px solid #6366f1;
+  border-radius: 20px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  background: none;
+}
+
+.avatar-upload-btn:hover {
+  background: #6366f1;
+  color: white;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
   .profile-content {
-    flex: 1;
-    padding: 2rem;
-    max-width: 900px;
-    margin: 0 auto;
-    width: 100%;
+    padding: 1.25rem;
   }
-  
-  .profile-header h1 {
-    color: #333;
-  }
-  .profile-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-  
+
   .profile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
-  
-  .profile-header-left {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
+
+  .profile-grid {
+    grid-template-columns: 1fr;
   }
-  
+
   .avatar-circle {
     width: 70px;
     height: 70px;
-    border-radius: 50%;
-    background: #6366f1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 1.5rem;
-    font-weight: 700;
-    color: white;
-    overflow: hidden;
-    flex-shrink: 0;
   }
-  
-  .avatar-circle img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .role-badge {
-    display: inline-block;
-    background: #ede9fe;
-    color: #6366f1;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-top: 0.25rem;
-  }
-  
-  .profile-card {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
-  
-  .courses-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .course-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #f3f4f6;
-  }
-  
-  .course-title {
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-  
-  .course-meta {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .badge {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    background: #f3f4f6;
-    color: #6b7280;
-  }
-  
-  .badge.published {
-    background: #d1fae5;
-    color: #065f46;
-  }
-  
-  .badge.draft {
-    background: #fef3c7;
-    color: #92400e;
-  }
-  
-  @media (max-width: 768px) {
-    .profile-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  .edit-btn {
-    padding: 0.75rem 1.5rem;
-    background-color: rgb(52, 51, 51);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .edit-btn:hover {
-    background-color: #5568d3;
-  }
-  
-  .profile-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .profile-section {
-    margin-bottom: 2rem;
-  }
-  
-  .profile-section h2 {
-    color: #333;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #667eea;
-    padding-bottom: 0.5rem;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-  }
-  
-  .form-group input:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  }
-  
-  .form-group input:disabled {
-    background-color: #f5f5f5;
-    color: #999;
-  }
-  
+
   .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .stat-item {
-    background: linear-gradient(135deg, red 0%, #764ba2 100%);
-    color: white;
-    padding: 1.5rem;
-    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .edit-btn,
+  .save-btn {
+    width: 100%;
     text-align: center;
   }
-  
-  .stat-label {
-    display: block;
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .profile-content {
+    padding: 1rem;
   }
-  
-  .stat-value {
-    display: block;
-    font-size: 2rem;
-    font-weight: 700;
-  }
-  
-  .courses-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .courses-list li {
-    background-color: #f5f5f5;
-    padding: 0.75rem 1rem;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    border-left: 4px solid #667eea;
-  }
-  
-  .action-buttons {
-    display: flex;
-    justify-content: flex-end;
+
+  .profile-header-left {
     gap: 1rem;
-    margin-top: 2rem;
   }
-  
-  .save-btn {
-    padding: 0.75rem 2rem;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s;
+
+  .avatar-circle {
+    width: 60px;
+    height: 60px;
+    font-size: 1.25rem;
   }
-  
-  .save-btn:hover {
-    background-color: #45a049;
+
+  .stats-grid {
+    grid-template-columns: 1fr;
   }
-  .avatar-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
+
+  .stat-value {
+    font-size: 1.35rem;
   }
-  
-  .avatar-upload-btn {
-    font-size: 0.75rem;
-    color: #6366f1;
-    cursor: pointer;
-    padding: 0.25rem 0.75rem;
-    border: 1px solid #6366f1;
-    border-radius: 20px;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  
-  .avatar-upload-btn:hover {
-    background: #6366f1;
-    color: white;
-  }
+}

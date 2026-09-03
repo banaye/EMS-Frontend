@@ -38,7 +38,7 @@ const ManageUsers: React.FC = () => {
     last_name: '',
     email: '',
     role: 'student',
-    password: 'Temp123!@#',
+    password: '',
   });
 
   const [editUser, setEditUser] = useState<Partial<User>>({});
@@ -83,7 +83,7 @@ const ManageUsers: React.FC = () => {
       }
       await fetchUsers();
       setShowCreateModal(false);
-      setNewUser({ username: '', first_name: '', last_name: '', email: '', role: 'student', password: 'Temp123!@#' });
+      setNewUser({ username: '', first_name: '', last_name: '', email: '', role: 'student', password: '' });
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to add user');
     }

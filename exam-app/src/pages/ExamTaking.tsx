@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import '../styles/ExamTaking.css';
 import { API_URL } from '../config';
-
 
 interface Option {
   id: number;
@@ -26,6 +25,10 @@ interface ExamSession {
   total_marks: number;
 }
 
+type ViolationType = 'tab_switch' | 'window_blur' | 'copy' | 'paste' | 'right_click' | 'devtools' | 'print_screen';
+
+const VIOLATION_THRESHOLD = 3;
+
 const ExamTaking: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
@@ -40,10 +43,11 @@ const ExamTaking: React.FC = () => {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [warning, setWarning] = useState('');
+  const [violationCount, setViolationCount] = useState(0);
 
-  // Security refs
   const hasAutoSubmitted = useRef<boolean>(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const violationCountRef = useRef<number>(0);
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -51,14 +55,26 @@ const ExamTaking: React.FC = () => {
     Authorization: `Bearer ${token}`,
   };
 
-  // Auto submit function
-  const handleAutoSubmit = async (reason: string) => {
-    if (hasAutoSubmitted.current || submitting || !attemptId) return;
-    
+  const logViolation = useCallback(async (type: ViolationType) => {
+    if (!attemptId) return;
+    try {
+      await fetch(`${API_URL}/exams/${examId}/attempts/${attemptId}/violations`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ violation_type: type }),
+      });
+    } catch (err) {
+      console.error('Failed to log violation:', err);
+    }
+  }, [attemptId, examId, headers]);
+
+  const handleAutoSubmit = useCallback(async (reason: string) => {
+    if (hasAutoSubmitted.current || !attemptId) return;
+
     hasAutoSubmitted.current = true;
     setSubmitting(true);
     setWarning(reason);
-    
+
     try {
       const res = await fetch(
         `${API_URL}/exams/${examId}/attempts/${attemptId}/submit`,
@@ -73,22 +89,36 @@ const ExamTaking: React.FC = () => {
       setSubmitting(false);
       hasAutoSubmitted.current = false;
     }
-  };
+  }, [attemptId, examId, headers, navigate]);
 
-  // Security: Detect tab/window switch - AUTO SUBMIT IMMEDIATELY
+  const handleViolation = useCallback((type: ViolationType, message: string) => {
+    if (hasAutoSubmitted.current) return;
+
+    logViolation(type);
+    violationCountRef.current += 1;
+    setViolationCount(violationCountRef.current);
+    setWarning(message);
+
+    if (violationCountRef.current >= VIOLATION_THRESHOLD) {
+      handleAutoSubmit(`Exam auto-submitted: ${VIOLATION_THRESHOLD} violations reached (${type}).`);
+    } else {
+      setTimeout(() => setWarning(''), 3000);
+    }
+  }, [logViolation, handleAutoSubmit]);
+
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden && !hasAutoSubmitted.current) {
-        handleAutoSubmit('Exam auto-submitted: Tab switch detected.');
+        handleViolation('tab_switch', 'Tab/window switch detected. This is violation 1 of 3. Your exam will auto-submit after 3 violations.');
       }
     };
-    
+
     const handleBlur = () => {
       if (!hasAutoSubmitted.current) {
-        handleAutoSubmit('Exam auto-submitted: Window focus lost.');
+        handleViolation('window_blur', 'Window focus lost. This is a violation. Your exam will auto-submit after 3 violations.');
       }
     };
-    
+
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (!hasAutoSubmitted.current) {
         e.preventDefault();
@@ -96,45 +126,68 @@ const ExamTaking: React.FC = () => {
         handleAutoSubmit('Exam auto-submitted: Page navigation detected.');
       }
     };
-    
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleBlur);
     window.addEventListener('beforeunload', handleBeforeUnload);
-    
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleBlur);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [attemptId]);
+  }, [handleViolation, handleAutoSubmit]);
 
-  // Security: Prevent copy/paste for text questions
-  const handleKeyDown = (e: React.KeyboardEvent, questionType: string) => {
-    if (questionType === 'short_answer' || questionType === 'essay') {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (hasAutoSubmitted.current) return;
+
       if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'v' || e.key === 'x')) {
         e.preventDefault();
-        setWarning('Copy/Paste is not allowed during exam.');
-        setTimeout(() => setWarning(''), 2000);
+        handleViolation('copy', 'Copy/Paste is prohibited. This is a violation.');
       }
+
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        handleViolation('print_screen', 'Print is prohibited. This is a violation.');
+      }
+
+      if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I')) {
+        e.preventDefault();
+        handleViolation('devtools', 'Developer tools access is prohibited. This is a violation.');
+      }
+
+      if (e.key === 'F5' || ((e.ctrlKey || e.metaKey) && e.key === 'r')) {
+        e.preventDefault();
+        handleViolation('tab_switch', 'Page refresh is prohibited. This is a violation.');
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+        e.preventDefault();
+        handleViolation('devtools', 'View source is prohibited. This is a violation.');
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleViolation]);
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!hasAutoSubmitted.current) {
+      handleViolation('right_click', 'Right-click is disabled during the exam. This is a violation.');
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    setWarning('Pasting is not allowed during exam.');
-    setTimeout(() => setWarning(''), 2000);
+    if (!hasAutoSubmitted.current) {
+      handleViolation('paste', 'Pasting is prohibited. This is a violation.');
+    }
   };
 
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setWarning('Right-click is disabled during exam.');
-    setTimeout(() => setWarning(''), 2000);
-  };
-
-  // Check if student has already completed this exam
   const checkIfExamAlreadyTaken = async () => {
     try {
-      // Check for existing completed attempt via API
       const checkRes = await fetch(`${API_URL}/exams/${examId}/attempts`, { headers });
       if (checkRes.ok) {
         const json = await checkRes.json();
@@ -142,7 +195,7 @@ const ExamTaking: React.FC = () => {
         const completedAttempt = Array.isArray(attemptsData) && attemptsData.find(
           (a: any) => a.status === 'graded' || a.status === 'submitted'
         );
-        
+
         if (completedAttempt) {
           alert('You have already taken this exam. You cannot take it again.');
           navigate('/dashboard', { replace: true });
@@ -158,21 +211,17 @@ const ExamTaking: React.FC = () => {
 
   useEffect(() => {
     const init = async () => {
-      // First check if exam was already taken
       const alreadyTaken = await checkIfExamAlreadyTaken();
       if (alreadyTaken) return;
-      
-      // If not taken, proceed with exam initialization
       initExam();
     };
-    
+
     init();
   }, [examId]);
 
-  // Timer with auto-submit on time elapsed
   useEffect(() => {
     if (timeLeft <= 0 || !exam || hasAutoSubmitted.current) return;
-    
+
     intervalRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -183,11 +232,11 @@ const ExamTaking: React.FC = () => {
         return prev - 1;
       });
     }, 1000);
-    
+
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [timeLeft, exam]);
+  }, [timeLeft, exam, handleAutoSubmit]);
 
   const initExam = async () => {
     try {
@@ -226,7 +275,7 @@ const ExamTaking: React.FC = () => {
     value: { selected_option_id?: number; text_answer?: string }
   ) => {
     if (hasAutoSubmitted.current) return;
-    
+
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
 
     if (!attemptId) return;
@@ -245,7 +294,7 @@ const ExamTaking: React.FC = () => {
     if (submitting || !attemptId || hasAutoSubmitted.current) return;
     const confirm = window.confirm('Are you sure you want to submit your exam?');
     if (!confirm) return;
-    
+
     setSubmitting(true);
     try {
       const res = await fetch(
@@ -281,7 +330,10 @@ const ExamTaking: React.FC = () => {
 
       {warning && (
         <div className="warning-banner">
-          Warning: {warning}
+          {warning}
+          {violationCount > 0 && violationCount < VIOLATION_THRESHOLD && (
+            <span className="violation-count"> ({violationCount}/{VIOLATION_THRESHOLD} violations)</span>
+          )}
         </div>
       )}
 
@@ -334,10 +386,9 @@ const ExamTaking: React.FC = () => {
                 onChange={(e) =>
                   handleAnswerChange(currentQuestion.id, { text_answer: e.target.value })
                 }
-                onKeyDown={(e) => handleKeyDown(e, currentQuestion.question_type)}
                 onPaste={handlePaste}
-                onCopy={handlePaste}
-                onCut={handlePaste}
+                onCopy={(e) => e.preventDefault()}
+                onCut={(e) => e.preventDefault()}
                 placeholder={`Enter your ${currentQuestion.question_type === 'essay' ? 'essay' : 'answer'} here...`}
                 rows={currentQuestion.question_type === 'essay' ? 8 : 4}
               />
