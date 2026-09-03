@@ -10,6 +10,7 @@ import StudentProfile from './pages/StudentProfile';
 import CourseManagement from './pages/CourseManagement';
 import QuestionBank from './pages/QuestionBank';
 import HodPanel from './pages/HodPanel';
+import NotFound from './pages/NotFound';
 import './App.css';
 
 function App() {
@@ -23,10 +24,12 @@ function App() {
           <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/exam/:examId" element={<PrivateRoute><ExamTaking /></PrivateRoute>} />
           <Route path="/hod/*" element={<StaffRoute><HodPanel /></StaffRoute>} />
+          <Route path="/admin/*" element={<StaffRoute><HodPanel /></StaffRoute>} />
           <Route path="/results/:examId" element={<PrivateRoute><Results /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><StudentProfile /></PrivateRoute>} />
           <Route path="/courses" element={<PrivateRoute><CourseManagement /></PrivateRoute>} />
           <Route path="/question-bank" element={<PrivateRoute><QuestionBank /></PrivateRoute>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </Router>

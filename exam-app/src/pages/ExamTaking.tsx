@@ -48,6 +48,9 @@ const ExamTaking: React.FC = () => {
   const hasAutoSubmitted = useRef<boolean>(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const violationCountRef = useRef<number>(0);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeLeftRef = useRef<number>(0);
+  const pendingAnswerRef = useRef<{ questionId: number; value: { selected_option_id?: number; text_answer?: string } } | null>(null);
 
   const token = localStorage.getItem('token');
   const headers = {
@@ -120,10 +123,18 @@ const ExamTaking: React.FC = () => {
     };
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (!hasAutoSubmitted.current) {
+      if (!hasAutoSubmitted.current && attemptId) {
         e.preventDefault();
         e.returnValue = 'You are leaving the exam. Your exam will be submitted automatically.';
         handleAutoSubmit('Exam auto-submitted: Page navigation detected.');
+        try {
+          navigator.sendBeacon(
+            `${API_URL}/exams/${examId}/attempts/${attemptId}/submit`,
+            new Blob([], { type: 'application/json' })
+          );
+        } catch (err) {
+          console.error('Beacon submit failed:', err);
+        }
       }
     };
 
@@ -136,7 +147,7 @@ const ExamTaking: React.FC = () => {
       window.removeEventListener('blur', handleBlur);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [handleViolation, handleAutoSubmit]);
+  }, [handleViolation, handleAutoSubmit, attemptId]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -220,23 +231,21 @@ const ExamTaking: React.FC = () => {
   }, [examId]);
 
   useEffect(() => {
-    if (timeLeft <= 0 || !exam || hasAutoSubmitted.current) return;
+    if (timeLeftRef.current <= 0 || !exam || hasAutoSubmitted.current) return;
 
     intervalRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          if (intervalRef.current) clearInterval(intervalRef.current);
-          handleAutoSubmit('Exam auto-submitted: Time elapsed.');
-          return 0;
-        }
-        return prev - 1;
-      });
+      timeLeftRef.current = Math.max(0, timeLeftRef.current - 1);
+      setTimeLeft(timeLeftRef.current);
+      if (timeLeftRef.current <= 0) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        handleAutoSubmit('Exam auto-submitted: Time elapsed.');
+      }
     }, 1000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [timeLeft, exam, handleAutoSubmit]);
+  }, [exam, handleAutoSubmit]);
 
   const initExam = async () => {
     try {
@@ -246,7 +255,9 @@ const ExamTaking: React.FC = () => {
       const examData = examJson.data || examJson;
       const durationMinutes = Number(examData.duration_minutes) || 0;
       setExam({ ...examData, duration_minutes: durationMinutes });
-      setTimeLeft(durationMinutes * 60);
+      const totalSeconds = durationMinutes * 60;
+      timeLeftRef.current = totalSeconds;
+      setTimeLeft(totalSeconds);
 
       const attemptRes = await fetch(`${API_URL}/exams/${examId}/attempts`, {
         method: 'POST',
@@ -270,14 +281,7 @@ const ExamTaking: React.FC = () => {
     }
   };
 
-  const handleAnswerChange = async (
-    questionId: number,
-    value: { selected_option_id?: number; text_answer?: string }
-  ) => {
-    if (hasAutoSubmitted.current) return;
-
-    setAnswers((prev) => ({ ...prev, [questionId]: value }));
-
+  const saveAnswer = useCallback(async (questionId: number, value: { selected_option_id?: number; text_answer?: string }) => {
     if (!attemptId) return;
     try {
       await fetch(`${API_URL}/exams/${examId}/attempts/${attemptId}/answers`, {
@@ -288,21 +292,56 @@ const ExamTaking: React.FC = () => {
     } catch (err) {
       console.error('Failed to save answer:', err);
     }
+  }, [attemptId, examId, headers]);
+
+  const handleAnswerChange = (
+    questionId: number,
+    value: { selected_option_id?: number; text_answer?: string }
+  ) => {
+    if (hasAutoSubmitted.current) return;
+
+    setAnswers((prev) => ({ ...prev, [questionId]: value }));
+
+    if (!attemptId) return;
+
+    if (value.text_answer !== undefined) {
+      pendingAnswerRef.current = { questionId, value };
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = setTimeout(() => {
+        pendingAnswerRef.current = null;
+        saveAnswer(questionId, value);
+      }, 600);
+    } else {
+      saveAnswer(questionId, value);
+    }
+  };
+
+  const flushPendingAnswer = async () => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
+    }
+    if (pendingAnswerRef.current) {
+      const { questionId, value } = pendingAnswerRef.current;
+      pendingAnswerRef.current = null;
+      await saveAnswer(questionId, value);
+    }
   };
 
   const handleSubmitExam = async () => {
     if (submitting || !attemptId || hasAutoSubmitted.current) return;
-    const confirm = window.confirm('Are you sure you want to submit your exam?');
-    if (!confirm) return;
+    const confirmed = window.confirm('Are you sure you want to submit your exam?');
+    if (!confirmed) return;
 
     setSubmitting(true);
+    await flushPendingAnswer();
+
     try {
       const res = await fetch(
         `${API_URL}/exams/${examId}/attempts/${attemptId}/submit`,
         { method: 'POST', headers }
       );
       if (!res.ok) throw new Error('Failed to submit exam');
-      alert('Exam submitted successfully!');
       navigate(`/results/${examId}`);
     } catch (err) {
       setError('Failed to submit exam. Please try again.');
