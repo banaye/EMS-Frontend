@@ -3,6 +3,7 @@
   flex-direction: column;
   min-height: 100vh;
   background-color: #f5f5f5;
+  padding-top: 60px;
 }
 
 .courses-content {
@@ -416,6 +417,10 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .courses-container {
+    padding-top: 56px;
+  }
+
   .courses-content {
     padding: 1.25rem;
   }

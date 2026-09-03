@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Navigation.css';
@@ -19,6 +19,8 @@ const Navigation: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
@@ -87,11 +89,26 @@ const Navigation: React.FC = () => {
   useEffect(() => {
     if (user) {
       fetchNotifications();
-      // Poll for new notifications every 30 seconds
       const interval = setInterval(fetchNotifications, 30000);
       return () => clearInterval(interval);
     }
   }, [user]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target as Node)) {
+        setMobileMenuOpen(false);
+      }
+      if (showNotifications) {
+        const target = e.target as HTMLElement;
+        if (!target.closest('.notification-container')) {
+          setShowNotifications(false);
+        }
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showNotifications]);
 
   const handleLogout = () => {
     logout();
@@ -121,26 +138,43 @@ const Navigation: React.FC = () => {
     return `${diffDays} day ago`;
   };
 
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   return (
     <header className="app-navigation">
       <div className="nav-brand">
-        <Link to="/dashboard"><span>EMS</span></Link>
+        <Link to="/dashboard" onClick={closeMobileMenu}><span>EMS</span></Link>
       </div>
-      <nav className="nav-links">
-        <Link to="/dashboard">DASHBOARD</Link>
+
+      <button
+        className={`hamburger-btn ${mobileMenuOpen ? 'active' : ''}`}
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Toggle menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div ref={mobileMenuRef} className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+        <Link to="/dashboard" onClick={closeMobileMenu}>DASHBOARD</Link>
         {(user?.role === 'hod' || user?.role === 'instructor') && (
-          <Link to="/question-bank">QUESTION BANK</Link>
+          <Link to="/question-bank" onClick={closeMobileMenu}>QUESTION BANK</Link>
         )}
-        <Link to="/courses">COURSES</Link>
-        <Link to="/profile">PROFILE</Link>
+        <Link to="/courses" onClick={closeMobileMenu}>COURSES</Link>
+        <Link to="/profile" onClick={closeMobileMenu}>PROFILE</Link>
         {(user?.role === 'hod' || user?.role === 'instructor') && (
-          <Link to="/hod">
+          <Link to="/hod" onClick={closeMobileMenu}>
             {user?.role === 'hod' ? 'HOD' : 'INSTRUCTOR'}
           </Link>
         )}
-      </nav>
+        <div className="mobile-nav-footer">
+          <span className="nav-user">{user?.first_name || user?.username || 'Guest'}</span>
+          <button type="button" onClick={handleLogout} className="nav-logout">LOGOUT</button>
+        </div>
+      </div>
+
       <div className="nav-actions">
-        {/* Notification Bell */}
         <div className="notification-container">
           <button 
             className="notification-bell"
@@ -189,10 +223,10 @@ const Navigation: React.FC = () => {
           )}
         </div>
         
-        <span className="nav-user">
+        <span className="nav-user desktop-only">
           {user?.first_name || user?.username || 'Guest'}
         </span>
-        <button type="button" onClick={handleLogout} className="nav-logout">
+        <button type="button" onClick={handleLogout} className="nav-logout desktop-only">
           LOGOUT
         </button>
       </div>

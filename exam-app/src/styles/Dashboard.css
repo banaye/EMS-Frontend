@@ -3,6 +3,7 @@
   flex-direction: column;
   min-height: 100vh;
   background-color: #f5f5f5;
+  padding-top: 60px;
 }
 
 .dashboard-content {
@@ -165,6 +166,10 @@
 }
 
 @media (max-width: 768px) {
+  .dashboard-container {
+    padding-top: 56px;
+  }
+
   .dashboard-content {
     padding: 1.25rem;
   }

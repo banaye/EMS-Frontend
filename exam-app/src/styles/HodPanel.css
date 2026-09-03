@@ -319,6 +319,7 @@
 @media (max-width: 768px) {
   .hod-container {
     flex-direction: column;
+    padding-top: 56px;
   }
 
   .hod-sidebar {
