@@ -123,7 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('refresh_token');
-    window.location.href = '/login';
+    window.location.replace(window.location.pathname + window.location.search + '#/login');
   };
 
   return (
