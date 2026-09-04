@@ -23,7 +23,7 @@ interface User {
   email: string;
   first_name: string;
   last_name: string;
-  role: 'student' | 'instructor' | 'hod';
+  role: 'student' | 'instructor' | 'hod' | 'admin';
 }
 
 const Dashboard: React.FC = () => {
@@ -109,12 +109,12 @@ const Dashboard: React.FC = () => {
                     </span>
                   </div>
 
-                  {exam.is_published && (
+                  {(exam.is_published || (user?.role === 'admin' || user?.role === 'hod' || user?.role === 'instructor')) && (
                     <button
                       className="start-exam-btn"
                       onClick={() => startExam(exam.id)}
                     >
-                      Start Exam
+                      {exam.is_published ? 'Start Exam' : 'Test Exam (Preview)'}
                     </button>
                   )}
 

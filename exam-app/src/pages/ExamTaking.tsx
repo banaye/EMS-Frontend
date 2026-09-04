@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
+import { useAuth } from '../context/AuthContext';
 import '../styles/ExamTaking.css';
 import { API_URL } from '../config';
 
@@ -32,6 +33,7 @@ const VIOLATION_THRESHOLD = 1;
 const ExamTaking: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [exam, setExam] = useState<ExamSession | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -222,7 +224,8 @@ const ExamTaking: React.FC = () => {
 
   useEffect(() => {
     const init = async () => {
-      const alreadyTaken = await checkIfExamAlreadyTaken();
+      const isStaff = ['admin', 'hod', 'instructor'].includes(user?.role || '');
+      const alreadyTaken = isStaff ? false : await checkIfExamAlreadyTaken();
       if (alreadyTaken) return;
       initExam();
     };
