@@ -25,9 +25,9 @@ interface ExamSession {
   total_marks: number;
 }
 
-type ViolationType = 'tab_switch' | 'window_blur' | 'copy' | 'paste' | 'right_click' | 'devtools' | 'print_screen';
+type ViolationType = 'tab_switch' | 'window_blur' | 'copy_paste' | 'right_click' | 'dev_tools' | 'suspicious_activity';
 
-const VIOLATION_THRESHOLD = 3;
+const VIOLATION_THRESHOLD = 1;
 
 const ExamTaking: React.FC = () => {
   const { examId } = useParams<{ examId: string }>();
@@ -112,13 +112,13 @@ const ExamTaking: React.FC = () => {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden && !hasAutoSubmitted.current) {
-        handleViolation('tab_switch', 'Tab/window switch detected. This is violation 1 of 3. Your exam will auto-submit after 3 violations.');
+        handleViolation('tab_switch', 'Tab/window switch detected. Your exam will now be auto-submitted.');
       }
     };
 
     const handleBlur = () => {
       if (!hasAutoSubmitted.current) {
-        handleViolation('window_blur', 'Window focus lost. This is a violation. Your exam will auto-submit after 3 violations.');
+        handleViolation('window_blur', 'Window focus lost. Your exam will now be auto-submitted.');
       }
     };
 
@@ -155,27 +155,27 @@ const ExamTaking: React.FC = () => {
 
       if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'v' || e.key === 'x')) {
         e.preventDefault();
-        handleViolation('copy', 'Copy/Paste is prohibited. This is a violation.');
+        handleViolation('copy_paste', 'Copy/Paste is prohibited. Your exam will now be auto-submitted.');
       }
 
       if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
         e.preventDefault();
-        handleViolation('print_screen', 'Print is prohibited. This is a violation.');
+        handleViolation('suspicious_activity', 'Print is prohibited. Your exam will now be auto-submitted.');
       }
 
       if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I')) {
         e.preventDefault();
-        handleViolation('devtools', 'Developer tools access is prohibited. This is a violation.');
+        handleViolation('dev_tools', 'Developer tools access is prohibited. Your exam will now be auto-submitted.');
       }
 
       if (e.key === 'F5' || ((e.ctrlKey || e.metaKey) && e.key === 'r')) {
         e.preventDefault();
-        handleViolation('tab_switch', 'Page refresh is prohibited. This is a violation.');
+        handleViolation('tab_switch', 'Page refresh is prohibited. Your exam will now be auto-submitted.');
       }
 
       if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
         e.preventDefault();
-        handleViolation('devtools', 'View source is prohibited. This is a violation.');
+        handleViolation('dev_tools', 'View source is prohibited. Your exam will now be auto-submitted.');
       }
     };
 
@@ -186,14 +186,14 @@ const ExamTaking: React.FC = () => {
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!hasAutoSubmitted.current) {
-      handleViolation('right_click', 'Right-click is disabled during the exam. This is a violation.');
+      handleViolation('right_click', 'Right-click is disabled during the exam. Your exam will now be auto-submitted.');
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     if (!hasAutoSubmitted.current) {
-      handleViolation('paste', 'Pasting is prohibited. This is a violation.');
+      handleViolation('copy_paste', 'Pasting is prohibited. Your exam will now be auto-submitted.');
     }
   };
 
