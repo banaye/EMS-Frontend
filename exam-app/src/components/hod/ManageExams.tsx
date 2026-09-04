@@ -504,7 +504,7 @@ const ManageExams: React.FC = () => {
                     type="number"
                     value={newExam.duration_minutes}
                     onChange={(e) =>
-                      setNewExam({ ...newExam, duration_minutes: parseInt(e.target.value) })
+                      setNewExam({ ...newExam, duration_minutes: parseInt(e.target.value) || 0 })
                     }
                     min="1"
                   />
@@ -515,7 +515,7 @@ const ManageExams: React.FC = () => {
                     type="number"
                     value={newExam.total_marks}
                     onChange={(e) =>
-                      setNewExam({ ...newExam, total_marks: parseInt(e.target.value) })
+                      setNewExam({ ...newExam, total_marks: parseInt(e.target.value) || 0 })
                     }
                     min="1"
                   />
@@ -526,7 +526,7 @@ const ManageExams: React.FC = () => {
                     type="number"
                     value={newExam.passing_marks}
                     onChange={(e) =>
-                      setNewExam({ ...newExam, passing_marks: parseInt(e.target.value) })
+                      setNewExam({ ...newExam, passing_marks: parseInt(e.target.value) || 0 })
                     }
                     min="1"
                   />
@@ -579,7 +579,7 @@ const ManageExams: React.FC = () => {
                     type="number"
                     value={editExam.duration_minutes}
                     onChange={(e) =>
-                      setEditExam({ ...editExam, duration_minutes: parseInt(e.target.value) })
+                      setEditExam({ ...editExam, duration_minutes: parseInt(e.target.value) || 0 })
                     }
                     min="1"
                   />
@@ -590,7 +590,7 @@ const ManageExams: React.FC = () => {
                     type="number"
                     value={editExam.total_marks}
                     onChange={(e) =>
-                      setEditExam({ ...editExam, total_marks: parseInt(e.target.value) })
+                      setEditExam({ ...editExam, total_marks: parseInt(e.target.value) || 0 })
                     }
                     min="1"
                   />
@@ -601,7 +601,7 @@ const ManageExams: React.FC = () => {
                     type="number"
                     value={editExam.passing_marks}
                     onChange={(e) =>
-                      setEditExam({ ...editExam, passing_marks: parseInt(e.target.value) })
+                      setEditExam({ ...editExam, passing_marks: parseInt(e.target.value) || 0 })
                     }
                     min="1"
                   />

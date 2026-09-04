@@ -46,7 +46,9 @@ const Navigation: React.FC = () => {
         setUnreadCount(unread);
       }
     } catch (err) {
-      console.error('Error fetching notifications:', err);
+      // The backend may be temporarily unreachable (e.g. waking from sleep on
+      // a free-tier host). This is transient — do not spam the console.
+      // console.error('Error fetching notifications:', err);
     }
   };
 

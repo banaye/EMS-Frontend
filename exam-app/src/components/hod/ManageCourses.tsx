@@ -566,11 +566,11 @@ const ManageCourses: React.FC = () => {
                 <label>Duration (minutes)</label>
                 <input
                   type="number"
-                  value={newCourse.duration_minutes}
-                  onChange={(e) =>
-                    setNewCourse({ ...newCourse, duration_minutes: parseInt(e.target.value) })
-                  }
-                  min="1"
+                    value={newCourse.duration_minutes}
+                    onChange={(e) =>
+                      setNewCourse({ ...newCourse, duration_minutes: parseInt(e.target.value) || 0 })
+                    }
+                    min="1"
                 />
               </div>
               <div className="form-group">
@@ -634,11 +634,11 @@ const ManageCourses: React.FC = () => {
                 <label>Duration (minutes)</label>
                 <input
                   type="number"
-                  value={editCourse.duration_minutes}
-                  onChange={(e) =>
-                    setEditCourse({ ...editCourse, duration_minutes: parseInt(e.target.value) })
-                  }
-                  min="1"
+                    value={editCourse.duration_minutes}
+                    onChange={(e) =>
+                      setEditCourse({ ...editCourse, duration_minutes: parseInt(e.target.value) || 0 })
+                    }
+                    min="1"
                 />
               </div>
               <div className="form-group">
