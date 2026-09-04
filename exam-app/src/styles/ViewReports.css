@@ -421,6 +421,45 @@
   color: #92400e;
 }
 
+.report-section.description p {
+  color: #374151;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.report-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.report-subheading {
+  margin: 0.75rem 0 0 0;
+  color: #1f2937;
+  font-size: 1rem;
+}
+
+.report-item {
+  background: #f9fafb;
+  border-left: 3px solid #6366f1;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+}
+
+.report-line {
+  margin: 0.15rem 0;
+  color: #374151;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.report-label {
+  font-weight: 600;
+  color: #1f2937;
+  text-transform: capitalize;
+}
+
 /* Metrics Grid */
 .metrics-grid {
   display: grid;

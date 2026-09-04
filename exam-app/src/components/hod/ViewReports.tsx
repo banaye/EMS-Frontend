@@ -10,6 +10,7 @@ interface Report {
   data: any;
   generatedDate: string;
   summary?: string;
+  description?: string;
 }
 
 interface StudentPerformance {
@@ -129,25 +130,155 @@ const ViewReports: React.FC = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const fieldLabels: Record<string, string> = {
+    student_name: 'Student Name',
+    email: 'Email',
+    enrolled_courses: 'Enrolled Courses',
+    completed_courses: 'Completed Courses',
+    total_attempts: 'Total Attempts',
+    average_score: 'Average Score',
+    pass_rate: 'Pass Rate',
+    exam_title: 'Exam Title',
+    highest_score: 'Highest Score',
+    lowest_score: 'Lowest Score',
+    course_title: 'Course Title',
+    total_enrolled: 'Total Enrolled',
+    completed_count: 'Completed',
+    average_progress: 'Average Progress',
+    average_rating: 'Average Rating',
+    total_users: 'Total Users',
+    total_students: 'Total Students',
+    total_instructors: 'Total Instructors',
+    total_courses: 'Total Courses',
+    published_courses: 'Published Courses',
+    total_exams: 'Total Exams',
+    published_exams: 'Published Exams',
+    graded_attempts: 'Graded Attempts',
+    passed_attempts: 'Passed Attempts',
+    failed_attempts: 'Failed Attempts',
+    pass_rate_pct: 'Pass Rate',
+    average_score_pct: 'Average Score',
+  };
+
+  const formatValue = (value: any): string => {
+    if (typeof value === 'number') {
+      return `${value}%`;
+    }
+    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+    return String(value);
+  };
+
+  const renderData = (data: any): React.ReactNode[] => {
+    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+      return [<p key="empty" className="report-line">No detailed data available.</p>];
+    }
+
+    const sections: React.ReactNode[] = [];
+
+    Object.keys(data).forEach((key) => {
+      const value = data[key];
+
+      if (Array.isArray(value)) {
+        sections.push(
+          <h4 key={`${key}-heading`} className="report-subheading">
+            {key.charAt(0).toUpperCase() + key.slice(1)}
+          </h4>
+        );
+        value.forEach((item, index) => {
+          if (item && typeof item === 'object') {
+            sections.push(
+              <div key={`${key}-${index}`} className="report-item">
+                {Object.keys(item).map((field) => (
+                  <p key={field} className="report-line">
+                    <span className="report-label">{fieldLabels[field] || field.replace(/_/g, ' ')}:</span>{' '}
+                    {formatValue(item[field])}
+                  </p>
+                ))}
+              </div>
+            );
+          } else {
+            sections.push(
+              <p key={`${key}-${index}`} className="report-line">{String(item)}</p>
+            );
+          }
+        });
+      } else if (value && typeof value === 'object') {
+        sections.push(
+          <div key={key} className="report-item">
+            {Object.keys(value).map((field) => (
+              <p key={field} className="report-line">
+                <span className="report-label">{fieldLabels[field] || field.replace(/_/g, ' ')}:</span>{' '}
+                {formatValue(value[field])}
+              </p>
+            ))}
+          </div>
+        );
+      } else {
+        sections.push(
+          <p key={key} className="report-line">
+            <span className="report-label">{fieldLabels[key] || key.replace(/_/g, ' ')}:</span>{' '}
+            {formatValue(value)}
+          </p>
+        );
+      }
+    });
+
+    return sections;
+  };
+
+  const reportToText = (report: Report): string => {
+    const lines: string[] = [];
+    lines.push(report.title);
+    lines.push(`Generated: ${report.generatedDate}`);
+    lines.push('');
+    if (report.description) {
+      lines.push(report.description);
+      lines.push('');
+    }
+    const render = (data: any) => {
+      if (!data || typeof data !== 'object') return;
+      Object.keys(data).forEach((key) => {
+        const value = data[key];
+        if (Array.isArray(value)) {
+          lines.push(`${key.charAt(0).toUpperCase() + key.slice(1)}:`);
+          value.forEach((item: any) => {
+            if (item && typeof item === 'object') {
+              lines.push(
+                Object.keys(item)
+                  .map((f) => `${fieldLabels[f] || f.replace(/_/g, ' ')}: ${formatValue(item[f])}`)
+                  .join(' | ')
+              );
+            } else {
+              lines.push(String(item));
+            }
+          });
+        } else if (value && typeof value === 'object') {
+          lines.push(
+            `${key.charAt(0).toUpperCase() + key.slice(1)}: ` +
+            Object.keys(value)
+              .map((f) => `${fieldLabels[f] || f.replace(/_/g, ' ')}: ${formatValue(value[f])}`)
+              .join(' | ')
+          );
+        } else {
+          lines.push(`${fieldLabels[key] || key.replace(/_/g, ' ')}: ${formatValue(value)}`);
+        }
+      });
+    };
+    render(report.data);
+    return lines.join('\n');
+  };
+
   const handleDownloadReport = (report: Report) => {
     try {
-      const downloadData = {
-        reportTitle: report.title,
-        generatedDate: report.generatedDate,
-        downloadTime: new Date().toISOString(),
-        data: report.data,
-        summary: report.summary || 'No summary available',
-      };
-      
-      const dataStr = JSON.stringify(downloadData, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-      const fileName = `${report.title.toLowerCase().replace(/\s+/g, '_')}_${report.generatedDate}.json`;
-      
+      const text = reportToText(report);
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
       const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', fileName);
+      linkElement.href = url;
+      const fileName = `${report.title.toLowerCase().replace(/\s+/g, '_')}_report.txt`;
+      linkElement.download = fileName;
       linkElement.click();
-      
+      window.URL.revokeObjectURL(url);
       alert('Report downloaded successfully!');
     } catch (error) {
       console.error('Error downloading report:', error);
@@ -163,12 +294,11 @@ const ViewReports: React.FC = () => {
           <head>
             <title>${report.title}</title>
             <style>
-              body { font-family: Arial, sans-serif; margin: 40px; }
+              body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
               h1 { color: #333; }
-              table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-              th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-              th { background: #f5f5f5; }
               .date { color: #666; margin: 20px 0; }
+              .description { font-size: 1rem; margin: 20px 0; }
+              pre { white-space: pre-wrap; font-family: inherit; background: #f5f5f5; padding: 12px; border-radius: 6px; }
             </style>
           </head>
           <body>
@@ -176,9 +306,8 @@ const ViewReports: React.FC = () => {
             <p class="date">Generated: ${report.generatedDate}</p>
             <p class="date">Printed: ${new Date().toLocaleString()}</p>
             <hr/>
-            <h3>Report Data</h3>
-            <pre>${JSON.stringify(report.data, null, 2)}</pre>
-            ${report.summary ? `<h3>Summary</h3><p>${report.summary}</p>` : ''}
+            ${report.description ? `<p class="description">${report.description}</p>` : ''}
+            <pre>${reportToText(report)}</pre>
           </body>
         </html>
       `);
@@ -419,7 +548,7 @@ const ViewReports: React.FC = () => {
               </div>
               <div className="action-buttons">
                 <button onClick={() => handleDownloadReport(selectedReport)} className="btn-small btn-download">
-                  Download JSON
+                  Download
                 </button>
                 <button onClick={() => handlePrintReport(selectedReport)} className="btn-small btn-print">
                   Print
@@ -427,16 +556,16 @@ const ViewReports: React.FC = () => {
               </div>
             </div>
             <div className="report-content">
-              <div className="report-section">
-                <h3>Report Data</h3>
-                <pre className="json-data">{JSON.stringify(selectedReport.data, null, 2)}</pre>
-              </div>
-              {selectedReport.summary && (
-                <div className="report-section summary">
-                  <h3>Summary</h3>
-                  <p>{selectedReport.summary}</p>
+              {selectedReport.description && (
+                <div className="report-section description">
+                  <h3>Overview</h3>
+                  <p>{selectedReport.description}</p>
                 </div>
               )}
+              <div className="report-section">
+                <h3>Report Details</h3>
+                <div className="report-body">{renderData(selectedReport.data)}</div>
+              </div>
             </div>
           </div>
         ) : (
