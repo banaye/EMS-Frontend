@@ -72,7 +72,7 @@ const ViewReports: React.FC = () => {
         fetch(`${API_URL}/reports/students-performance`, { headers }),
         fetch(`${API_URL}/reports/courses-analytics`, { headers }),
         fetch(`${API_URL}/reports/exams-analytics`, { headers }),
-        fetch(`${API_URL}/reports/analytics`, { headers }),
+        fetch(`${API_URL}/reports/summary`, { headers }),
       ]);
       
       if (studentsRes.ok) {
